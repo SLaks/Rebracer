@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" ?>
+<Dictionary>
+	<Words>
+		<Recognized>
+			<Word>SLaks</Word>
+			<Word>Rebracer</Word>
+		</Recognized>
+		<DiscreteExceptions>
+		</DiscreteExceptions>
+	</Words>
+	<Acronyms>
+		<CasingExceptions>
+		</CasingExceptions>
+	</Acronyms>
+</Dictionary>

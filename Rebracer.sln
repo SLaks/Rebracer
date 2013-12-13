@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rebracer", "Rebracer\Rebracer.csproj", "{C7A5F6B2-0BB5-4123-B1C0-FD036A19E173}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rebracer.Tests", "Rebracer\Rebracer_UnitTests\Rebracer.Tests.csproj", "{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7A5F6B2-0BB5-4123-B1C0-FD036A19E173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7A5F6B2-0BB5-4123-B1C0-FD036A19E173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7A5F6B2-0BB5-4123-B1C0-FD036A19E173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7A5F6B2-0BB5-4123-B1C0-FD036A19E173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
