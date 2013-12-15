@@ -2,10 +2,12 @@
 <Dictionary>
 	<Words>
 		<Recognized>
-			<Word>SLaks</Word>
+			<Word>Laks</Word>
 			<Word>Rebracer</Word>
+			<Word>sp</Word>
 		</Recognized>
 		<DiscreteExceptions>
+			<Term>SLaks</Term>
 		</DiscreteExceptions>
 	</Words>
 	<Acronyms>
