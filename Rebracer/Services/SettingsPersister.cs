@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
@@ -27,24 +26,28 @@ namespace SLaks.Rebracer.Services {
 		public string SettingsPath { get; set; }
 
 		public void SaveSettings() {
-			var xml = XDocument.Load(SettingsPath);
+			using (var stream = File.Open(SettingsPath, FileMode.OpenOrCreate)) {
+				var xml = XDocument.Load(stream, LoadOptions.PreserveWhitespace);
 
-			foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
-				string category = containerElem.Parent.Attribute("name").Value;
-				string subcategory = containerElem.Attribute("name").Value;
-				Properties container;
-				try {
-					container = dte.Properties[category, subcategory];
-				} catch (Exception ex) {
-					logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
-					continue;
+				foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
+					string category = containerElem.Parent.Attribute("name").Value;
+					string subcategory = containerElem.Attribute("name").Value;
+					Properties container;
+					try {
+						container = dte.Properties[category, subcategory];
+					} catch (Exception ex) {
+						logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
+						continue;
+					}
+
+					XmlMerger.MergeElements(
+						containerElem,
+						container.Cast<Property>().Select(XmlValue),
+						x => x.Attribute("name").Value
+					);
 				}
-
-				XmlMerger.MergeElements(
-					containerElem,
-					container.Cast<Property>().Select(XmlValue),
-					x => x.Attribute("name").Value
-				);
+				stream.SetLength(0);
+				xml.Save(stream);
 			}
 		}
 		static XElement XmlValue(Property prop) {
@@ -63,7 +66,7 @@ namespace SLaks.Rebracer.Services {
 
 		///<summary>Reads settings from the XML file into Visual Studio's global settings.</summary>
 		public void LoadSettings() {
-			var xml = XDocument.Load(SettingsPath);
+			var xml = XDocument.Load(SettingsPath, LoadOptions.PreserveWhitespace);
 
 			foreach (var subcategoryElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
 				string category = subcategoryElem.Parent.Attribute("name").Value;
