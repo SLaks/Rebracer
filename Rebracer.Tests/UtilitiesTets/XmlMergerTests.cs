@@ -78,6 +78,25 @@ namespace Rebracer.Tests.UtilitiesTets {
 			));
 		}
 		[TestMethod]
+		public void ElementsAreCaseSensitive() {
+			var container = new XElement("C",
+				new XElement("A"),
+				new XElement("b")
+			);
+
+			MergeElements(container,
+				new XElement("a"),
+				new XElement("B")
+			);
+
+			container.Should().BeEquivalentTo(new XElement("C",
+				new XElement("A"),
+				new XElement("B"),
+				new XElement("a"),
+				new XElement("b")
+			));
+		}
+		[TestMethod]
 		public void StopReorderingAfterLastInsertion() {
 			var container = new XElement("C",
 				new XElement("a"),
