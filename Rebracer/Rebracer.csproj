@@ -135,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Services\ILogger.cs" />
+    <Compile Include="Services\SettingsLocator.cs" />
+    <Compile Include="Services\SolutionListener.cs" />
     <Compile Include="Services\VsLogger.cs" />
     <Compile Include="Utilities\KnownSettings.cs" />
     <Compile Include="Guids.cs" />

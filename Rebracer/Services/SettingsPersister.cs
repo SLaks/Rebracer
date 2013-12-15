@@ -23,33 +23,40 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		///<summary>Gets or sets the path to the XML file containing the persisted settings.</summary>
-		public string SettingsPath { get; set; }
+		public string SettingsPath { get; private set; }
 
+		///<summary>Updates the XML file with the current Visual Studio settings.</summary>
 		public void SaveSettings() {
 			using (var stream = File.Open(SettingsPath, FileMode.OpenOrCreate)) {
 				var xml = XDocument.Load(stream, LoadOptions.PreserveWhitespace);
 
-				foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
-					string category = containerElem.Parent.Attribute("name").Value;
-					string subcategory = containerElem.Attribute("name").Value;
-					Properties container;
-					try {
-						container = dte.Properties[category, subcategory];
-					} catch (Exception ex) {
-						logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
-						continue;
-					}
+				UpdateSettingsXml(xml);
 
-					XmlMerger.MergeElements(
-						containerElem,
-						container.Cast<Property>().Select(XmlValue),
-						x => x.Attribute("name").Value
-					);
-				}
 				stream.SetLength(0);
 				xml.Save(stream);
 			}
 		}
+
+		private void UpdateSettingsXml(XDocument xml) {
+			foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
+				string category = containerElem.Parent.Attribute("name").Value;
+				string subcategory = containerElem.Attribute("name").Value;
+				Properties container;
+				try {
+					container = dte.Properties[category, subcategory];
+				} catch (Exception ex) {
+					logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
+					continue;
+				}
+
+				XmlMerger.MergeElements(
+					containerElem,
+					container.Cast<Property>().Select(XmlValue),
+					x => x.Attribute("name").Value
+				);
+			}
+		}
+
 		static XElement XmlValue(Property prop) {
 			if (prop.Value is Array) {
 				return new XElement("PropertyValue",
@@ -99,6 +106,40 @@ namespace SLaks.Rebracer.Services {
 				return elem.Elements().Select(x => x.Value).ToArray();
 			else
 				return elem.Value;
+		}
+
+		///<summary>Creates and activates a new settings file at the specified location, seeding it with the current Visual Studio settings.</summary>
+		public void CreateSettingsFile(string path, string comment) {
+			var xml = new XDocument(
+				new XDeclaration("1.0", "utf8", "yes"),
+				new XComment(comment),
+				new XElement("UserSettings",
+					new XElement("ToolsOptions",
+			from t in KnownSettings.DefaultCategories
+			group t by t.Item1 into cat
+			select new XElement("ToolsOptionsCategory",
+				new XAttribute("name", cat.Key),
+				cat.Select(sc => new XElement("ToolsOptionsSubCategory", new XAttribute("name", sc.Item2)))
+			)
+					)
+				)
+			);
+			UpdateSettingsXml(xml);
+			xml.Save(path);
+			SettingsPath = path;
+		}
+
+		///<summary>Loads an existing settings file.</summary>
+		public void ActivateSettingsFile(string path) {
+			if (!File.Exists(path))
+				throw new FileNotFoundException("SettingsPersister.SettingsPath doesn't exist.", path);
+
+			if (SettingsPath == path)
+				return;
+
+			SettingsPath = path;
+			logger.Log("Loading settings from " + path);
+			LoadSettings();
 		}
 	}
 }
