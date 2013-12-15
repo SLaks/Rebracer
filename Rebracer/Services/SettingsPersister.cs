@@ -83,7 +83,11 @@ namespace SLaks.Rebracer.Services {
 				}
 
 				foreach (var property in subcategoryElem.Elements("PropertyValue")) {
-					container.Item(property.Attribute("Name").Value).Value = VsValue(property);
+					try {
+						container.Item(property.Attribute("name").Value).Value = VsValue(property);
+					} catch (Exception ex) {
+						logger.Log("An error occurred while reading the setting " + category + "/" + subcategory + "#" + property.Attribute("name").Value + " from settings file.", ex);
+					}
 				}
 			}
 		}
