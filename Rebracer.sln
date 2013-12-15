@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rebracer", "Rebracer\Rebrac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rebracer.Tests", "Rebracer.Tests\Rebracer.Tests.csproj", "{155BC0BE-0735-4FA6-B926-76EC4BE9C8AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{09BE4DFB-7471-4DF6-9C57-A16367B20A27}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		Security.md = Security.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
