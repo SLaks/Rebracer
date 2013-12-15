@@ -32,7 +32,13 @@ namespace SLaks.Rebracer.Services {
 			foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
 				string category = containerElem.Parent.Attribute("name").Value;
 				string subcategory = containerElem.Attribute("name").Value;
-				var container = dte.Properties[category, subcategory];
+				Properties container;
+				try {
+					container = dte.Properties[category, subcategory];
+				} catch (Exception ex) {
+					logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
+					continue;
+				}
 
 				XmlMerger.MergeElements(
 					containerElem,
@@ -61,14 +67,20 @@ namespace SLaks.Rebracer.Services {
 
 			foreach (var subcategoryElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
 				string category = subcategoryElem.Parent.Attribute("name").Value;
-				string subCategory = subcategoryElem.Attribute("name").Value;
+				string subcategory = subcategoryElem.Attribute("name").Value;
 
-				if (!KnownSettings.IsAllowed(category, subCategory)) {
-					logger.Log("Warning: Not loading unsafe category " + category + "/" + subCategory + ".  You may have a malicious Rebracer.xml file");
+				if (!KnownSettings.IsAllowed(category, subcategory)) {
+					logger.Log("Warning: Not loading unsafe category " + category + "/" + subcategory + ".  You may have a malicious Rebracer.xml file.");
 					continue;
 				}
 
-				var container = dte.Properties[category, subCategory];
+				Properties container;
+				try {
+					container = dte.Properties[category, subcategory];
+				} catch (Exception ex) {
+					logger.Log("Warning: Not loading unsupported category " + category + "/" + subcategory + " from settings file; you may be missing an extension.", ex);
+					continue;
+				}
 
 				foreach (var property in subcategoryElem.Elements("PropertyValue")) {
 					container.Item(property.Attribute("Name").Value).Value = VsValue(property);
