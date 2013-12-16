@@ -8,6 +8,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace SLaks.Rebracer {
 	/// <summary>
@@ -23,6 +24,10 @@ namespace SLaks.Rebracer {
 	// This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
 	// a package.
 	[PackageRegistration(UseManagedResourcesOnly = true)]
+
+	[ProvideAutoLoad(UIContextGuids80.NoSolution)]		// Load the default settings file if VS was closed with a solution open
+	[ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+
 	// This attribute is used to register the information needed to show this package
 	// in the Help/About dialog of Visual Studio.
 	[InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
@@ -54,6 +59,11 @@ namespace SLaks.Rebracer {
 		protected override void Initialize() {
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
 			base.Initialize();
+
+			var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
+
+			// Registers event handlers in ctor
+			componentModel.GetService<Services.SolutionListener>();
 
 			// Add our command handlers for menu (commands must exist in the .vsct file)
 			OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
