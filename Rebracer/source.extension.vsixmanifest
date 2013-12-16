@@ -4,6 +4,11 @@
 		<Identity Id="bfc869c4-ae0f-467a-86a4-5d9401303490" Version="1.0" Language="en-US" Publisher="SLaks" />
 		<DisplayName>Rebracer</DisplayName>
 		<Description xml:space="preserve">Saves editor formatting settings as part of each solution.</Description>
+		<MoreInfo>https://github.com/SLaks/Rebracer</MoreInfo>
+		<GettingStartedGuide>https://github.com/SLaks/Rebracer</GettingStartedGuide>
+		<Icon>Resources\Package.ico</Icon>
+		<PreviewImage>Resources\Rebracer-200.png</PreviewImage>
+		<Tags>settings, solution, source formatting</Tags>
 	</Metadata>
 	<Installation InstalledByMsi="false">
 		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[10.0, 15.0]" />
