@@ -34,7 +34,7 @@ namespace SLaks.Rebracer.Services {
 
 		///<summary>Gets the path to the settings file to use for a specific solution, if any.</summary>
 		public string GetActiveFile(Solution solution) {
-			if (solution == null)
+			if (!solution.IsOpen)
 				return UserSettingsFile;
 			return new[] { SolutionPath(solution), UserSettingsFile }.FirstOrDefault(File.Exists) ?? UserSettingsFile;
 		}
