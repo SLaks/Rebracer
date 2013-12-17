@@ -33,6 +33,7 @@ namespace SLaks.Rebracer.Services {
 				if (!UpdateSettingsXml(xml))
 					return false;
 
+				dte.CheckOutFromSourceControl(SettingsPath);
 				stream.SetLength(0);
 				xml.Save(stream);
 				logger.Log("Saved changed settings to " + SettingsPath);

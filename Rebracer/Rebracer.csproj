@@ -137,6 +137,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Services\ILogger.cs" />
     <Compile Include="Services\SettingsLocator.cs" />
     <Compile Include="Services\SolutionListener.cs" />
