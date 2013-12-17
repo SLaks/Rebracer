@@ -28,7 +28,7 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		public void Log(string message) {
-			ErrorHandler.ThrowOnFailure(pane.OutputStringThreadSafe(DateTime.Now + ": Rebracer: " + message));
+			ErrorHandler.ThrowOnFailure(pane.OutputStringThreadSafe(DateTime.Now + ": Rebracer: " + message + "\n"));
 		}
 
 		public void Log(string message, Exception ex) {
