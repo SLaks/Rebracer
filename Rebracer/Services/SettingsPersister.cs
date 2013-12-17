@@ -44,20 +44,19 @@ namespace SLaks.Rebracer.Services {
 
 		private bool UpdateSettingsXml(XDocument xml) {
 			bool changed = false;
-			foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
-				string category = containerElem.Parent.Attribute("name").Value;
-				string subcategory = containerElem.Attribute("name").Value;
+			foreach (var section in SettingsSection.FromXmlSettingsFile(xml.Root)) {
+
 				Properties container;
 				try {
-					container = dte.Properties[category, subcategory];
+					container = dte.Properties(section.Item1);
 				} catch (Exception ex) {
-					logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
+					logger.Log("Warning: Not saving unsupported category " + section.Item1 + " in existing settings file; you may be missing an extension.", ex);
 					continue;
 				}
-				
+
 				// Single ampersand to avoid short-circuiting
 				changed = changed & XmlMerger.MergeElements(
-					containerElem,
+					section.Item2,
 					container.Cast<Property>().Select(XmlValue).Where(x => x != null),
 					x => x.Attribute("name").Value
 				);
@@ -88,28 +87,25 @@ namespace SLaks.Rebracer.Services {
 		public void LoadSettings() {
 			var xml = XDocument.Load(SettingsPath, LoadOptions.PreserveWhitespace);
 
-			foreach (var subcategoryElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
-				string category = subcategoryElem.Parent.Attribute("name").Value;
-				string subcategory = subcategoryElem.Attribute("name").Value;
-
-				if (!KnownSettings.IsAllowed(category, subcategory)) {
-					logger.Log("Warning: Not loading unsafe category " + category + "/" + subcategory + ".  You may have a malicious Rebracer.xml file.");
+			foreach (var section in SettingsSection.FromXmlSettingsFile(xml.Root)) {
+				if (!KnownSettings.IsAllowed(section.Item1)) {
+					logger.Log("Warning: Not loading unsafe category " + section.Item1 + ".  You may have a malicious Rebracer.xml file.");
 					continue;
 				}
 
 				Properties container;
 				try {
-					container = dte.Properties[category, subcategory];
+					container = dte.Properties(section.Item1);
 				} catch (Exception ex) {
-					logger.Log("Warning: Not loading unsupported category " + category + "/" + subcategory + " from settings file; you may be missing an extension.", ex);
+					logger.Log("Warning: Not loading unsupported category " + section.Item1 + " from settings file; you may be missing an extension.", ex);
 					continue;
 				}
 
-				foreach (var property in subcategoryElem.Elements("PropertyValue")) {
+				foreach (var property in section.Item2.Elements("PropertyValue")) {
 					try {
 						container.Item(property.Attribute("name").Value).Value = VsValue(property);
 					} catch (Exception ex) {
-						logger.Log("An error occurred while reading the setting " + category + "/" + subcategory + "#" + property.Attribute("name").Value + " from settings file.", ex);
+						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + property.Attribute("name").Value + " from settings file.", ex);
 					}
 				}
 			}
@@ -131,10 +127,10 @@ namespace SLaks.Rebracer.Services {
 				new XElement("UserSettings",
 					new XElement("ToolsOptions",
 			from t in KnownSettings.DefaultCategories
-			group t by t.Item1 into cat
+			group t by t.Category into cat
 			select new XElement("ToolsOptionsCategory",
 				new XAttribute("name", cat.Key),
-				cat.Select(sc => new XElement("ToolsOptionsSubCategory", new XAttribute("name", sc.Item2)))
+				cat.Select(sc => new XElement("ToolsOptionsSubCategory", new XAttribute("name", sc.Subcategory)))
 			)
 					)
 				)
