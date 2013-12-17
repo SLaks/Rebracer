@@ -8,7 +8,7 @@ using System.Xml.Linq;
 namespace SLaks.Rebracer.Utilities {
 	public static class XmlMerger {
 		///<summary>Merges a collection of new XML elements into an existing parent element, ensuring that the results are sorted alphabetically.</summary>
-		///<param name="container">The parent element containing the original elements to merge into.  If the merge encounters unsorted elements, the entire container will be sorted.</param>
+		///<param name="container">The parent element containing the original elements to merge into.  If it contains out-of-order elements, the entire container will be sorted.</param>
 		///<param name="newElements">The elements to merge in.</param>
 		///<param name="nameSelector">A delegate to extract the name from an element to compare against.  Use this to sort by element name or a name attribute.</param>
 		///<remarks>
@@ -41,12 +41,6 @@ namespace SLaks.Rebracer.Utilities {
 					o.ReplaceWith(newItems[newIndex].Value);
 					newIndex++;
 				}
-
-				// If we finished inserting all of the new elements, stop early.
-				// This means that we won't check that the rest of the container
-				// is sorted; that is fine.
-				if (newIndex == newItems.Count)
-					return;
 
 				// If the container is not already sorted, sort it,
 				// then try again.

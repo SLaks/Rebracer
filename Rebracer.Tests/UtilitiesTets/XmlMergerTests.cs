@@ -97,7 +97,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			));
 		}
 		[TestMethod]
-		public void StopReorderingAfterLastInsertion() {
+		public void DontStopReorderingAfterLastInsertion() {
 			var container = new XElement("C",
 				new XElement("a"),
 				new XElement("c"),
@@ -114,13 +114,13 @@ namespace Rebracer.Tests.UtilitiesTets {
 				new XElement("a"),
 				new XElement("b"),
 				new XElement("c", new XElement("child", "Hi there!")),
-				new XElement("e"),
-				new XElement("d")
-			), "the merger should stop checking for ordering after it finishes merging all new elements");
+				new XElement("d"),
+				new XElement("e")
+			), "the merger should not stop checking for ordering after it finishes merging all new elements");
 		}
 
 		[TestMethod]
-		public void OverwriteExistingElement() {
+		public void OverwriteExistingElements() {
 			var container = new XElement("C",
 				new XElement("a"),
 				new XElement("b"),
@@ -136,6 +136,24 @@ namespace Rebracer.Tests.UtilitiesTets {
 				new XElement("a", 42),
 				new XElement("b"),
 				new XElement("c", new XAttribute("Value", 67))
+			));
+		}
+		[TestMethod]
+		public void OverwriteExistingOutOfOrderElement() {
+			var container = new XElement("C",
+				new XElement("c"),
+				new XElement("b"),
+				new XElement("a")
+			);
+
+			MergeElements(container,
+				new XElement("a", 42)
+			);
+
+			container.Should().BeEquivalentTo(new XElement("C",
+				new XElement("a", 42),
+				new XElement("b"),
+				new XElement("c")
 			));
 		}
 	}
