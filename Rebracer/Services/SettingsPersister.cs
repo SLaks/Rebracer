@@ -57,14 +57,14 @@ namespace SLaks.Rebracer.Services {
 				// Single ampersand to avoid short-circuiting
 				changed = changed & XmlMerger.MergeElements(
 					section.Item2,
-					container.Cast<Property>().Select(XmlValue).Where(x => x != null),
+					container.Cast<Property>().Select(p => XmlValue(section.Item1, p)).Where(x => x != null),
 					x => x.Attribute("name").Value
 				);
 			}
 			return changed;
 		}
 
-		XElement XmlValue(Property prop) {
+		XElement XmlValue(SettingsSection section, Property prop) {
 			try {
 				if (prop.Value is Array) {
 					return new XElement("PropertyValue",
@@ -78,7 +78,7 @@ namespace SLaks.Rebracer.Services {
 				else
 					return new XElement("PropertyValue", new XAttribute("name", prop.Name), prop.Value);
 			} catch (COMException ex) {
-				logger.Log("An error occurred while saving " + prop.Name + ": " + ex.Message);
+				logger.Log("An error occurred while saving " + section + "#" + prop.Name + ": " + ex.Message);
 				return null;
 			}
 		}
