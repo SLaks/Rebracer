@@ -55,8 +55,6 @@ namespace SLaks.Rebracer.Services {
 
 			dteEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
 			solutionEvents.BeforeClosing += SolutionEvents_BeforeClosing;
-
-			var pct = (IVsRegisterPriorityCommandTarget)sp.GetService(typeof(SVsRegisterPriorityCommandTarget));
 		}
 		private void AddCommandEventHandler(Guid group, VSConstants.VSStd97CmdID cmdId, _dispCommandEvents_AfterExecuteEventHandler handler) {
 			var h = dte.Events.CommandEvents[group.ToString("B"), (int)cmdId];
