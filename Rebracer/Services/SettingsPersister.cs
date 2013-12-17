@@ -116,10 +116,12 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		///<summary>Creates and activates a new settings file at the specified location, seeding it with the current Visual Studio settings.</summary>
-		public void CreateSettingsFile(string path, string comment) {
+		/// <param name="path">The path to the file to create.</param>
+		/// <param name="commentLines">Lines of description to insert in a comment on top of the file.</param>
+		public void CreateSettingsFile(string path, params string[] commentLines) {
 			var xml = new XDocument(
 				new XDeclaration("1.0", "utf8", "yes"),
-				new XComment(comment),
+				commentLines.Select(c => new XComment(c)),
 				new XElement("UserSettings",
 					new XElement("ToolsOptions",
 			from t in KnownSettings.DefaultCategories

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using Microsoft.Win32;
@@ -64,6 +65,25 @@ namespace SLaks.Rebracer {
 
 			// Registers event handlers in ctor
 			componentModel.GetService<Services.SolutionListener>();
+
+			var logger = componentModel.GetService<Services.ILogger>();
+
+			var locator = componentModel.GetService<Services.SettingsLocator>();
+			// On first launch, populate the global settings file
+			// before loading any solution settings.
+			if (!File.Exists(locator.UserSettingsFile)) {
+				logger.Log("Creating user settings file to store current global settings");
+				componentModel.GetService<Services.SettingsPersister>().CreateSettingsFile(locator.UserSettingsFile,
+					"Rebracer User Settings File",
+					"This file contains your global Visual Studio settings.",
+					"Rebracer uses this file to restore your settings after",
+					"closing a solution that specifies its own settings.",
+					"This file will be automatically updated by Rebracer as",
+					"you change settings in Visual Studio"
+				);
+			}
+			// If the global file already exists, wait for SolutionListener
+			// to restore it after Visual Studio launches, for users 
 
 			// Add our command handlers for menu (commands must exist in the .vsct file)
 			OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
