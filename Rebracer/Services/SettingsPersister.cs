@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
@@ -53,29 +54,34 @@ namespace SLaks.Rebracer.Services {
 					logger.Log("Warning: Not saving unsupported category " + category + "/" + subcategory + " in existing settings file; you may be missing an extension.", ex);
 					continue;
 				}
-
+				
 				// Single ampersand to avoid short-circuiting
 				changed = changed & XmlMerger.MergeElements(
 					containerElem,
-					container.Cast<Property>().Select(XmlValue),
+					container.Cast<Property>().Select(XmlValue).Where(x => x != null),
 					x => x.Attribute("name").Value
 				);
 			}
 			return changed;
 		}
 
-		static XElement XmlValue(Property prop) {
-			if (prop.Value is Array) {
-				return new XElement("PropertyValue",
-					new XAttribute("name", prop.Name),
-					new XAttribute("ArrayType", "VT_VARIANT"),
-					new XAttribute("ArrayElementCount", ((ICollection)prop.Value).Count),
-					((IEnumerable<object>)prop.Value)
-						.Select((v, i) => new XElement("PropertyValue", new XAttribute("name", i), v))
-				);
+		XElement XmlValue(Property prop) {
+			try {
+				if (prop.Value is Array) {
+					return new XElement("PropertyValue",
+						new XAttribute("name", prop.Name),
+						new XAttribute("ArrayType", "VT_VARIANT"),
+						new XAttribute("ArrayElementCount", ((ICollection)prop.Value).Count),
+						((IEnumerable<object>)prop.Value)
+							.Select((v, i) => new XElement("PropertyValue", new XAttribute("name", i), v))
+					);
+				}
+				else
+					return new XElement("PropertyValue", new XAttribute("name", prop.Name), prop.Value);
+			} catch (COMException ex) {
+				logger.Log("An error occurred while saving " + prop.Name, ex);
+				return null;
 			}
-			else
-				return new XElement("PropertyValue", new XAttribute("name", prop.Name), prop.Value);
 		}
 
 		///<summary>Reads settings from the XML file into Visual Studio's global settings.</summary>
@@ -120,7 +126,7 @@ namespace SLaks.Rebracer.Services {
 		/// <param name="commentLines">Lines of description to insert in a comment on top of the file.</param>
 		public void CreateSettingsFile(string path, params string[] commentLines) {
 			var xml = new XDocument(
-				new XDeclaration("1.0", "utf8", "yes"),
+				new XDeclaration("1.0", "utf-8", "yes"),
 				commentLines.Select(c => new XComment(c)),
 				new XElement("UserSettings",
 					new XElement("ToolsOptions",
