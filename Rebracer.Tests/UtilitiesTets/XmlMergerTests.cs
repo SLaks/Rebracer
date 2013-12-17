@@ -9,9 +9,8 @@ using SLaks.Rebracer.Utilities;
 namespace Rebracer.Tests.UtilitiesTets {
 	[TestClass]
 	public class XmlMergerTests {
-		static void MergeElements(XElement container, params XElement[] newItems) {
-
-			XmlMerger.MergeElements(container, newItems, x => x.Name.LocalName);
+		static bool MergeElements(XElement container, params XElement[] newItems) {
+			return XmlMerger.MergeElements(container, newItems, x => x.Name.LocalName);
 		}
 
 		[TestMethod]
@@ -22,7 +21,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 				new XElement("c"),
 				new XElement("a"),
 				new XElement("b")
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("a"),
@@ -44,7 +43,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 				new XElement("b"),
 				new XElement("c"),
 				new XElement("a")
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("a"),
@@ -57,7 +56,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			));
 		}
 		[TestMethod]
-		public void ReorderExistingElement() {
+		public void ReorderExistingElements() {
 			var container = new XElement("C",
 				new XElement("c"),
 				new XElement("d"),
@@ -67,7 +66,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			MergeElements(container,
 				new XElement("a"),
 				new XElement("e")
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("a"),
@@ -87,7 +86,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			MergeElements(container,
 				new XElement("a"),
 				new XElement("B")
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("A"),
@@ -108,7 +107,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			MergeElements(container,
 				new XElement("c", new XElement("child", "Hi there!")),
 				new XElement("b")
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("a"),
@@ -130,7 +129,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 			MergeElements(container,
 				new XElement("a", 42),
 				new XElement("c", new XAttribute("Value", 67))
-			);
+			).Should().BeTrue();
 
 			container.Should().BeEquivalentTo(new XElement("C",
 				new XElement("a", 42),
@@ -156,6 +155,44 @@ namespace Rebracer.Tests.UtilitiesTets {
 				new XElement("c")
 			));
 		}
+
+		[TestMethod]
+		public void ReorderCountsAsChange() {
+			var container = new XElement("C",
+				new XElement("c"),
+				new XElement("d"),
+				new XElement("b")
+			);
+
+			MergeElements(container,
+				new XElement("b")
+			).Should().BeTrue();
+
+			container.Should().BeEquivalentTo(new XElement("C",
+				new XElement("b"),
+				new XElement("c"),
+				new XElement("d")
+			));
+		}
+		[TestMethod]
+		public void IdenticalReplacementIsNotChange() {
+			var container = new XElement("C",
+				new XElement("b", new XAttribute("SomeProp", DateTime.Today), "Hi there!", new XElement("Deep", "Content")),
+				new XElement("c"),
+				new XElement("d")
+			);
+
+			MergeElements(container,
+				new XElement("b", new XAttribute("SomeProp", DateTime.Today), "Hi there!", new XElement("Deep", "Content"))
+			).Should().BeFalse();
+
+			container.Should().BeEquivalentTo(new XElement("C",
+				new XElement("b", new XAttribute("SomeProp", DateTime.Today), "Hi there!", new XElement("Deep", "Content")),
+				new XElement("c"),
+				new XElement("d")
+			));
+		}
+
 	}
 	// Stolen from https://github.com/dennisdoomen/fluentassertions/pull/35
 	// TODO: Delete these classes after that is released.

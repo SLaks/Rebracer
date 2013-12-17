@@ -26,18 +26,22 @@ namespace SLaks.Rebracer.Services {
 		public string SettingsPath { get; private set; }
 
 		///<summary>Updates the XML file with the current Visual Studio settings.</summary>
-		public void SaveSettings() {
+		public bool SaveSettings() {
 			using (var stream = File.Open(SettingsPath, FileMode.OpenOrCreate)) {
 				var xml = XDocument.Load(stream, LoadOptions.PreserveWhitespace);
 
-				UpdateSettingsXml(xml);
+				if (!UpdateSettingsXml(xml))
+					return false;
 
 				stream.SetLength(0);
 				xml.Save(stream);
+				logger.Log("Saved changed settings to " + SettingsPath);
+				return true;
 			}
 		}
 
-		private void UpdateSettingsXml(XDocument xml) {
+		private bool UpdateSettingsXml(XDocument xml) {
+			bool changed = false;
 			foreach (var containerElem in xml.Root.Elements("ToolsOptions").Elements("ToolsOptionsCategory").Elements("ToolsOptionsSubCategory")) {
 				string category = containerElem.Parent.Attribute("name").Value;
 				string subcategory = containerElem.Attribute("name").Value;
@@ -49,12 +53,14 @@ namespace SLaks.Rebracer.Services {
 					continue;
 				}
 
-				XmlMerger.MergeElements(
+				// Single ampersand to avoid short-circuiting
+				changed = changed & XmlMerger.MergeElements(
 					containerElem,
 					container.Cast<Property>().Select(XmlValue),
 					x => x.Attribute("name").Value
 				);
 			}
+			return changed;
 		}
 
 		static XElement XmlValue(Property prop) {
