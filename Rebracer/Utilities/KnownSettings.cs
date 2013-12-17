@@ -28,7 +28,7 @@ namespace SLaks.Rebracer.Utilities {
 		///<remarks>Existing files will use whatever categories exist in their XML.</remarks>
 		public static readonly IReadOnlyCollection<Tuple<string, string>> DefaultCategories = new ReadOnlyCollection<Tuple<string, string>>(new[] {
 			Tuple.Create("Environment", "TaskList"),
-			Tuple.Create("TextEditor", "CSharp Specific"),
+			Tuple.Create("TextEditor", "CSharp-Specific"),
 			Tuple.Create("TextEditor", "JavaScript Specific"),
 			Tuple.Create("TextEditor", "C/C++ Specific"),
 			Tuple.Create("TextEditor", "TypeScript Specific"),
