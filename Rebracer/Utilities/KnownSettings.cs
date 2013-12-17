@@ -36,7 +36,8 @@ namespace SLaks.Rebracer.Utilities {
 			new SettingsSection("TextEditor", "XAML Specific"),
 
 			//TODO: Which of these categories are used by Venus (<= Dev11) & Libra (>= Dev12)?
-			new SettingsSection("TextEditor", "HTML Specific"),
+			//new SettingsSection("TextEditor", "HTML Specific"),
+			// Too slow & unreliable.  https://gist.github.com/SLaks/7999962
 			new SettingsSection("TextEditor", "HTMLX Specific"),
 		});
 	}
