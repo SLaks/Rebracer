@@ -50,7 +50,7 @@ namespace SLaks.Rebracer.Services {
 				try {
 					container = dte.Properties(section.Item1);
 				} catch (Exception ex) {
-					logger.Log("Warning: Not saving unsupported category " + section.Item1 + " in existing settings file; you may be missing an extension.", ex);
+					logger.Log("Warning: Not saving unsupported category " + section.Item1 + " in existing settings file; you may be missing an extension.  Error: " + ex.Message);
 					continue;
 				}
 
@@ -78,7 +78,7 @@ namespace SLaks.Rebracer.Services {
 				else
 					return new XElement("PropertyValue", new XAttribute("name", prop.Name), prop.Value);
 			} catch (COMException ex) {
-				logger.Log("An error occurred while saving " + prop.Name, ex);
+				logger.Log("An error occurred while saving " + prop.Name + ": " + ex.Message);
 				return null;
 			}
 		}
@@ -97,7 +97,7 @@ namespace SLaks.Rebracer.Services {
 				try {
 					container = dte.Properties(section.Item1);
 				} catch (Exception ex) {
-					logger.Log("Warning: Not loading unsupported category " + section.Item1 + " from settings file; you may be missing an extension.", ex);
+					logger.Log("Warning: Not loading unsupported category " + section.Item1 + " from settings file; you may be missing an extension.  Error: " + ex.Message);
 					continue;
 				}
 
@@ -105,7 +105,7 @@ namespace SLaks.Rebracer.Services {
 					try {
 						container.Item(property.Attribute("name").Value).Value = VsValue(property);
 					} catch (Exception ex) {
-						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + property.Attribute("name").Value + " from settings file.", ex);
+						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + property.Attribute("name").Value + " from settings file.  Error: " + ex.Message);
 					}
 				}
 			}
