@@ -126,8 +126,9 @@ namespace SLaks.Rebracer.Services {
 				commentLines.Select(c => new XComment(c)),
 				new XElement("UserSettings",
 					new XElement("ToolsOptions",
-			from t in KnownSettings.DefaultCategories
-			group t by t.Category into cat
+			from section in KnownSettings.DefaultCategories
+			where IsPresent(section)
+			group section by section.Category into cat
 			select new XElement("ToolsOptionsCategory",
 				new XAttribute("name", cat.Key),
 				cat.Select(sc => new XElement("ToolsOptionsSubCategory", new XAttribute("name", sc.Subcategory)))
@@ -138,6 +139,12 @@ namespace SLaks.Rebracer.Services {
 			UpdateSettingsXml(xml);
 			xml.Save(path);
 			SettingsPath = path;
+		}
+		bool IsPresent(SettingsSection section) {
+			try {
+				dte.Properties(section);
+				return true;
+			} catch (COMException) { return false; }
 		}
 
 		///<summary>Loads an existing settings file.</summary>
