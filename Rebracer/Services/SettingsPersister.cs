@@ -65,22 +65,24 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		XElement XmlValue(SettingsSection section, Property prop) {
+			object value;
 			try {
-				if (prop.Value is Array) {
-					return new XElement("PropertyValue",
-						new XAttribute("name", prop.Name),
-						new XAttribute("ArrayType", "VT_VARIANT"),
-						new XAttribute("ArrayElementCount", ((ICollection)prop.Value).Count),
-						((IEnumerable<object>)prop.Value)
-							.Select((v, i) => new XElement("PropertyValue", new XAttribute("name", i), v))
-					);
-				}
-				else
-					return new XElement("PropertyValue", new XAttribute("name", prop.Name), prop.Value);
+				value = prop.Value;
 			} catch (COMException ex) {
 				logger.Log("An error occurred while saving " + section + "#" + prop.Name + ": " + ex.Message);
 				return null;
 			}
+			var collection = value as ICollection;
+			if (collection == null)
+				return new XElement("PropertyValue", new XAttribute("name", prop.Name), value);
+
+			return new XElement("PropertyValue",
+				new XAttribute("name", prop.Name),
+				new XAttribute("ArrayType", "VT_VARIANT"),
+				new XAttribute("ArrayElementCount", collection.Count),
+				((IEnumerable<object>)value)
+					.Select((v, i) => new XElement("PropertyValue", new XAttribute("name", i), v))
+			);
 		}
 
 		///<summary>Reads settings from the XML file into Visual Studio's global settings.</summary>
