@@ -49,6 +49,7 @@ namespace SLaks.Rebracer.Services {
 
 			projectEvents = ((Events2)dte.Events).ProjectItemsEvents;
 			projectEvents.ItemAdded += ProjectEvents_ItemAdded;
+			projectEvents.ItemRemoved += ProjectEvents_ItemRemoved;
 
 			foreach (var optionCmdId in optionsCommands) {
 				AddCommandEventHandler(VSConstants.GUID_VSStandardCommandSet97, optionCmdId, ToolsOptionsCommand_AfterExecute);
@@ -107,6 +108,22 @@ namespace SLaks.Rebracer.Services {
 							  + "To add a Rebracer settings file, right-click the solution, click Add, New Rebracer Settings File\n"
 							  + "Alternatively, copy an existing settings file to \n  " + expectedPath,
 								"Rebracer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		private void ProjectEvents_ItemRemoved(ProjectItem ProjectItem) {
+			var oldPath = locator.SolutionPath(dte.Solution);
+			if (String.IsNullOrEmpty(oldPath)
+			 || ProjectItem.FileCount != 1 || ProjectItem.get_FileNames(1) != oldPath)
+				return;
+
+			if (!File.Exists(oldPath))
+				persister.ActivateSettingsFile(locator.UserSettingsFile);
+			else if (DialogResult.Yes == MessageBox.Show("The Rebracer settings file still exists; you are still using solution-specific settings.\n"
+													   + "Would you like to delete the Rebracer settings file from disk and revert to global settings?",
+														 "Rebracer", MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+				File.Delete(oldPath);
+				persister.ActivateSettingsFile(locator.UserSettingsFile);
+			}
 		}
 		#endregion
 
