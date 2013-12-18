@@ -65,7 +65,7 @@
         <Parent guid="guidRebracerCmdSet" id="MyMenuGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Rebracer Settings File</ButtonText>
+          <ButtonText>New Rebracer Settings File</ButtonText>
           <ToolTipText>Creates a Rebracer settings file storing editor settings for this solution, initialized from your current Visual Studio options.</ToolTipText>
         </Strings>
       </Button>
