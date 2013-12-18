@@ -97,7 +97,7 @@ namespace SLaks.Rebracer.Services {
 			var expectedPath = locator.SolutionPath(dte.Solution);
 			if (String.IsNullOrEmpty(expectedPath)
 			 || ProjectItem.Name != Path.GetFileName(expectedPath)
-			 || ProjectItem.FileCount != 0 || !File.Exists(ProjectItem.FileNames[1]))
+			 || ProjectItem.FileCount != 1 || !File.Exists(ProjectItem.get_FileNames(1)))
 				return;
 
 			if (File.Exists(expectedPath))
