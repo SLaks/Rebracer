@@ -42,7 +42,7 @@
     <Groups>
 
       <Group guid="guidRebracerCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_SOLUTION_ADD"/>
       </Group>
       
 
@@ -63,8 +63,10 @@
 
       <Button guid="guidRebracerCmdSet" id="cmdCreateSolutionSettingsFile" priority="0x0100" type="Button">
         <Parent guid="guidRebracerCmdSet" id="MyMenuGroup" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <ButtonText>Create Rebracer settings file</ButtonText>
+          <ButtonText>Rebracer Settings File</ButtonText>
+          <ToolTipText>Creates a Rebracer settings file storing editor settings for this solution, initialized from your current Visual Studio options.</ToolTipText>
         </Strings>
       </Button>
 

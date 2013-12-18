@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
+using EnvDTE80;
 using SLaks.Rebracer.Utilities;
 
 namespace SLaks.Rebracer {
@@ -15,6 +16,15 @@ namespace SLaks.Rebracer {
 
 		public static Properties Properties(this DTE dte, SettingsSection section) {
 			return dte.Properties[section.Category, section.Subcategory];
+		}
+
+		const string SolutionItems = "Solution Items";
+		public static Project GetSolutionItems(this Solution solution) {
+			return solution.Projects
+						   .OfType<Project>()
+						   .FirstOrDefault(p => p.Name.Equals(SolutionItems, StringComparison.OrdinalIgnoreCase))
+						?? ((Solution2)solution).AddSolutionFolder(SolutionItems);
+
 		}
 	}
 }

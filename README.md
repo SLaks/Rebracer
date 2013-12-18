@@ -8,7 +8,7 @@ Rebracer solves this by storing these settings alongside each solution.  When yo
 ##How it works
 Whenever you open a solution, Rebracer will check for a `Rebracer.xml` file in the solution directory.  If it finds one, it will load all settings from that file so that the solution will use its specified settings.  When you change settings in Visual Studio's regular Options dialog, Rebracer will update the XML file with the changed settings. 
 
-To use Rebracer for a new solution, right-click the solution, click Add, New Rebracer Settings File.  This will create a Rebracer.xml for the solution, seeded with your current VS settings.  You can then open the Options dialog to choose settings specific to that solution.  From then on, anyone who opens that solution with Rebracer installed will get those settings.  You can also copy an existing Rebracer.xml file from a different solution to start with its settings.  If so, you must close and re-open the solution to pick up the new file.
+To use Rebracer for a new solution, right-click the solution, click Add, Rebracer Settings File.  This will create a Rebracer.xml for the solution, seeded with your current VS settings.  You can then open the Options dialog to choose settings specific to that solution.  From then on, anyone who opens that solution with Rebracer installed will get those settings.  You can also copy an existing Rebracer.xml file from a different solution to start with its settings.  If so, you must close and re-open the solution to pick up the new file.
 
 ##FAQ
  - Q: I want to contribute to a project that uses Rebracer.  What do I need to do?  

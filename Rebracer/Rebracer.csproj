@@ -138,12 +138,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Services\CommandBase.cs" />
     <Compile Include="Services\ILogger.cs" />
     <Compile Include="Services\SettingsLocator.cs" />
+    <Compile Include="Services\CreateSolutionSettingsCommand.cs" />
     <Compile Include="Services\SolutionListener.cs" />
     <Compile Include="Services\VsLogger.cs" />
     <Compile Include="Utilities\KnownSettings.cs" />
-    <Compile Include="Guids.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -152,7 +154,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="RebracerPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PkgCmdID.cs" />
     <Compile Include="Services\SettingsPersister.cs" />
     <Compile Include="Utilities\XmlMerger.cs" />
   </ItemGroup>

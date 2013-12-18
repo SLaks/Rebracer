@@ -7,4 +7,9 @@ namespace SLaks.Rebracer {
 
 		public static readonly Guid guidRebracerCmdSet = new Guid(guidRebracerCmdSetString);
 	}
+
+	///<summary>Contains command IDs for commands defined by this package.  These values are defined in the vsct file.</summary>
+	public enum PackageCommand {
+		CreateSolutionSettingsFile = 0x100
+	}
 }

@@ -1,15 +1,12 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace SLaks.Rebracer {
 	/// <summary>
@@ -26,7 +23,7 @@ namespace SLaks.Rebracer {
 	// a package.
 	[PackageRegistration(UseManagedResourcesOnly = true)]
 
-	[ProvideAutoLoad(UIContextGuids80.NoSolution)]		// Load the default settings file if VS was closed with a solution open
+	[ProvideAutoLoad(UIContextGuids80.NoSolution)]      // Load the default settings file if VS was closed with a solution open
 	[ProvideAutoLoad(UIContextGuids80.SolutionExists)]
 
 	// This attribute is used to register the information needed to show this package
@@ -48,13 +45,8 @@ namespace SLaks.Rebracer {
 		}
 
 
-
-		/////////////////////////////////////////////////////////////////////////////
-		// Overridden Package Implementation
-		#region Package Members
-
 		/// <summary>
-		/// Initialization of the package; this method is called right after the package is sited, so this is the place
+		/// Initializes the package.  This method is called right after the package is sited, so this is the place
 		/// where you can put all the initialization code that rely on services provided by VisualStudio.
 		/// </summary>
 		protected override void Initialize() {
@@ -63,7 +55,8 @@ namespace SLaks.Rebracer {
 
 			var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
-			// Registers event handlers in ctor
+			// This service registers event handlers in its ctor
+			// and does not require further interaction.
 			componentModel.GetService<Services.SolutionListener>();
 
 			var logger = componentModel.GetService<Services.ILogger>();
@@ -85,39 +78,10 @@ namespace SLaks.Rebracer {
 			// If the global file already exists, wait for SolutionListener
 			// to restore it after Visual Studio launches, for users 
 
-			// Add our command handlers for menu (commands must exist in the .vsct file)
-			OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-			if (null != mcs) {
-				// Create the command for the menu item.
-				CommandID menuCommandID = new CommandID(GuidList.guidRebracerCmdSet, (int)PkgCmdIDList.cmdCreateSolutionSettingsFile);
-				MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-				mcs.AddCommand(menuItem);
+			var mcs = (IMenuCommandService)GetService(typeof(IMenuCommandService));
+			foreach (var command in componentModel.GetExtensions<Services.CommandBase>()) {
+				mcs.AddCommand(command.Command);
 			}
-		}
-		#endregion
-
-		/// <summary>
-		/// This function is the callback used to execute a command when the a menu item is clicked.
-		/// See the Initialize method to see how the menu item is associated to this function using
-		/// the OleMenuCommandService service and the MenuCommand class.
-		/// </summary>
-		private void MenuItemCallback(object sender, EventArgs e) {
-			// Show a Message Box to prove we were here
-			IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-			Guid clsid = Guid.Empty;
-			int result;
-			Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-					   0,
-					   ref clsid,
-					   "Rebracer",
-					   string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
-					   string.Empty,
-					   0,
-					   OLEMSGBUTTON.OLEMSGBUTTON_OK,
-					   OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-					   OLEMSGICON.OLEMSGICON_INFO,
-					   0,        // false
-					   out result));
 		}
 	}
 }
