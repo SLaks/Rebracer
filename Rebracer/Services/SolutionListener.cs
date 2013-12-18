@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Runtime.InteropServices;
 using EnvDTE;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
+using Task = System.Threading.Tasks.Task;
 
 namespace SLaks.Rebracer.Services {
 	///<summary>Handles Visual Studio events to save and load settings files when appropriate.</summary>
@@ -42,7 +38,6 @@ namespace SLaks.Rebracer.Services {
 
 			dteEvents = dte.Events.DTEEvents;
 			solutionEvents = dte.Events.SolutionEvents;
-			dteEvents = dte.Events.DTEEvents;
 
 			dteEvents.OnStartupComplete += DTEEvents_OnStartupComplete;
 			solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
@@ -69,9 +64,13 @@ namespace SLaks.Rebracer.Services {
 			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
 		}
 
-		private void SolutionEvents_AfterClosing() {
+		private async void SolutionEvents_AfterClosing() {
 			// If the user closed a solution, switch back
 			// to the global (or new solution's) settings
+			// Wait a bit to avoid double-loading in case
+			// the user opened a new solution, as opposed
+			// to closing this one only.
+			await Task.Delay(750);
 			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
 		}
 

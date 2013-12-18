@@ -54,8 +54,8 @@ namespace SLaks.Rebracer.Services {
 					continue;
 				}
 
-				// Single ampersand to avoid short-circuiting
-				changed = changed & XmlMerger.MergeElements(
+				// Single (bitwise) or to avoid short-circuiting & always run merge
+				changed = changed | XmlMerger.MergeElements(
 					section.Item2,
 					container.Cast<Property>().Select(p => XmlValue(section.Item1, p)).Where(x => x != null),
 					x => x.Attribute("name").Value
