@@ -5,7 +5,7 @@ using System.Windows.Interop;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using SLaks.Rebracer.Services;
-using WPFGrowlNotification;
+using WpfGrowlNotification;
 
 namespace SLaks.Rebracer.Notifications {
 	[Export(typeof(INotificationService))]
@@ -35,7 +35,7 @@ namespace SLaks.Rebracer.Notifications {
 			AddNotification(new Notification {
 				Title = title,
 				Message = text,
-				ImageUrl = "pack://application:,,,/Rebracer;component/Resources/Rebracer-100.png"
+				ImageUrl = new Uri("pack://application:,,,/Rebracer;component/Resources/Rebracer-100.png")
 			});
 		}
 	}

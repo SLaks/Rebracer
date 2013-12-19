@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WPFGrowlNotification {
+namespace WpfGrowlNotification {
 	public partial class GrowlNotifications {
 		private const byte MAX_NOTIFICATIONS = 4;
 		private readonly ObservableCollection<Notification> buffer = new ObservableCollection<Notification>();
@@ -48,7 +48,7 @@ namespace WPFGrowlNotification {
 			if (e.NewSize.Height != 0.0)
 				return;
 			var element = sender as FrameworkElement;
-			RemoveNotification(Notifications.First(n => n.Id == Int32.Parse(element.Tag.ToString())));
+			RemoveNotification((Notification)element.Tag);
 		}
 	}
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WPFGrowlNotification {
+namespace WpfGrowlNotification {
 	public class Notification : INotifyPropertyChanged {
 		private string message;
 		public string Message {
@@ -17,8 +18,8 @@ namespace WPFGrowlNotification {
 			set { SetProperty(ref id, value); }
 		}
 
-		private string imageUrl;
-		public string ImageUrl {
+		private Uri imageUrl;
+		public Uri ImageUrl {
 			get { return imageUrl; }
 			set { SetProperty(ref imageUrl, value); }
 		}
