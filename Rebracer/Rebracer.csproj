@@ -145,6 +145,7 @@
     <Compile Include="Notifications\GrowlNotifications.xaml.cs">
       <DependentUpon>GrowlNotifications.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Notifications\GrowlNotificationsService.cs" />
     <Compile Include="Notifications\Notification.cs" />
     <Compile Include="Services\CommandBase.cs" />
     <Compile Include="Services\ILogger.cs" />
@@ -196,6 +197,7 @@
     <Content Include="Resources\Package.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\Rebracer-100.png" />
     <Content Include="Resources\Rebracer-200.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
