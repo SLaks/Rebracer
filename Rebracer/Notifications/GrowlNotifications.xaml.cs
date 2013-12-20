@@ -45,7 +45,7 @@ namespace WpfGrowlNotification {
 		}
 
 		private void NotificationWindowSizeChanged(object sender, SizeChangedEventArgs e) {
-			if (e.NewSize.Height != 0.0)
+			if (e.NewSize.Height > 5)
 				return;
 			var element = sender as FrameworkElement;
 			RemoveNotification((Notification)element.Tag);
