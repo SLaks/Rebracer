@@ -26,30 +26,31 @@
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
 						<ColumnDefinition Width="*"></ColumnDefinition>
 					</Grid.ColumnDefinitions>
-					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="4" Width="80"></Image>
+					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="80"></Image>
 					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"  Margin="2,4,4,2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
 					<wcp:WindowTitleBarButton x:Name="CloseButton" Grid.Column="1" 
-											  HorizontalAlignment="Right"
+											  HorizontalAlignment="Right" VerticalAlignment="Top" 
+											  Padding="9,10" Margin="0,-12,-12,0"
 											  BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
-											  BorderThickness="1,0,1,1"
-											  GlyphForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonActiveGlyphBrushKey}}" 
+											  BorderThickness="1,0,0,1"
+											  GlyphForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
 											  HoverBackground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveBrushKey}}" 
 											  HoverBorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveBorderBrushKey}}"
 											  HoverForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveGlyphBrushKey}}" 
-											  HoverBorderThickness="1,0,1,1"
+											  HoverBorderThickness="1,0,0,1"
 											  PressedBackground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownBrushKey}}" 
 											  PressedBorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownBorderBrushKey}}" 
 											  PressedForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownActiveGlyphBrushKey}}" 
-											  PressedBorderThickness="1,0,1,1" Padding="8" 
+											  PressedBorderThickness="1,0,0,1" 
 											  AutomationProperties.Name="Close" AutomationProperties.AutomationId="Close" 
 											  ToolTip="Close">
-						<Path Name="HideButtonPath" x:Uid="HideButtonPath" Width="10" Height="8" Stretch="Uniform" Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" 
+						<Path Name="HideButtonPath" x:Uid="HideButtonPath" Stretch="Uniform" Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" 
 								  Fill="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}" />
 					</wcp:WindowTitleBarButton>
 
 					<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
-								   FontFamily="Arial" VerticalAlignment="Center"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+								   FontFamily="Arial" VerticalAlignment="Top"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
 				</Grid>
 			</Border>
 			<DataTemplate.Triggers>
