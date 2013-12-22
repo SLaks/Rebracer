@@ -12,12 +12,6 @@ namespace WpfGrowlNotification {
 			set { SetProperty(ref message, value); }
 		}
 
-		private int id;
-		public int Id {
-			get { return id; }
-			set { SetProperty(ref id, value); }
-		}
-
 		private Uri imageUrl;
 		public Uri ImageUrl {
 			get { return imageUrl; }

@@ -13,7 +13,7 @@
 			<DoubleAnimation From="100" To="0" Storyboard.TargetProperty="Height" Duration="0:0:1"/>
 		</Storyboard>
 		<DataTemplate x:Key="MessageTemplate" DataType="Model:Notification">
-			<Border x:Name="NotificationWindow" Tag="{Binding}" SizeChanged="NotificationWindowSizeChanged"
+			<Border x:Name="NotificationWindow" SizeChanged="NotificationWindowSizeChanged"
 						Background="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBackgroundGradientBrushKey}}"
 						BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBorderBrushKey}}"
 						BorderThickness="1" Margin="10">

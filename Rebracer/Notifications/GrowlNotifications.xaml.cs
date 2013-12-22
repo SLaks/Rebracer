@@ -8,39 +8,36 @@ namespace WpfGrowlNotification {
 	public partial class GrowlNotifications {
 		private const byte MAX_NOTIFICATIONS = 4;
 		private readonly ObservableCollection<Notification> buffer = new ObservableCollection<Notification>();
-		private int count;
 
-		public ObservableCollection<Notification> Notifications { get; private set; }
+		private readonly ObservableCollection<Notification> currentNotifications = new ObservableCollection<Notification>();
 
 		public GrowlNotifications() {
 			InitializeComponent();
-			Notifications = new ObservableCollection<Notification>();
-			NotificationsControl.DataContext = Notifications;
+			NotificationsControl.DataContext = currentNotifications;
 		}
 
 		public void AddNotification(Notification notification) {
-			notification.Id = count++;
-			if (Notifications.Count + 1 > MAX_NOTIFICATIONS)
+			if (currentNotifications.Count + 1 > MAX_NOTIFICATIONS)
 				buffer.Add(notification);
 			else
-				Notifications.Add(notification);
+				currentNotifications.Add(notification);
 
 			//Show window if there're notifications
-			if (Notifications.Count > 0 && !IsActive)
+			if (currentNotifications.Count > 0 && !IsActive)
 				Show();
 		}
 
 		public void RemoveNotification(Notification notification) {
-			if (Notifications.Contains(notification))
-				Notifications.Remove(notification);
+			if (currentNotifications.Contains(notification))
+				currentNotifications.Remove(notification);
 
 			if (buffer.Count > 0) {
-				Notifications.Add(buffer[0]);
+				currentNotifications.Add(buffer[0]);
 				buffer.RemoveAt(0);
 			}
 
 			//Close window if there's nothing to show
-			if (Notifications.Count < 1)
+			if (currentNotifications.Count < 1)
 				Hide();
 		}
 
@@ -48,7 +45,7 @@ namespace WpfGrowlNotification {
 			if (e.NewSize.Height > 5)
 				return;
 			var element = sender as FrameworkElement;
-			RemoveNotification((Notification)element.Tag);
+			RemoveNotification((Notification)element.DataContext);
 		}
 	}
 }
