@@ -13,16 +13,16 @@ using Microsoft.VisualStudio.Shell;
 namespace SLaks.Rebracer.Notifications {
 	public class DesignerThemeDictionary : DeferredResourceDictionaryBase {
 
-		// We must access properties from these classes using dynamic due to NoPIA conflicts.
+		// We must access everything from these classes using dynamic due to NoPIA conflicts.
 		// The compiler gives some errors since we do not have the right PIA, and the runtime
 		// gives more errors because NoPIA doesn't unify for managed implementations.
 		dynamic currentTheme;
-		readonly ColorThemeService service;
+		readonly dynamic service;
 		public DesignerThemeDictionary() {
 			if (ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel)) != null)
 				return; // Do nothing when hosted in VS
 			ServiceProviderMock.Initialize();
-			service = (ColorThemeService)Activator.CreateInstance(typeof(ColorThemeService));
+			service = Activator.CreateInstance(typeof(WindowFrameTitle).Assembly.GetType("Microsoft.VisualStudio.Platform.WindowManagement.ColorThemeService"));
 			ThemeIndex = 0;
 		}
 		int themeIndex;
@@ -35,9 +35,8 @@ namespace SLaks.Rebracer.Notifications {
 				return;
 			Clear();
 
-			dynamic dynamicService = service;
-			currentTheme = dynamicService.Themes[index % service.Themes.Count];
-			foreach (ColorName colorName in dynamicService.ColorNames) {
+			currentTheme = service.Themes[index % service.Themes.Count];
+			foreach (ColorName colorName in service.ColorNames) {
 				IVsColorEntry vsColorEntry = currentTheme[colorName];
 				if (vsColorEntry != null) {
 					if (vsColorEntry.BackgroundType != 0) {
