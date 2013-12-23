@@ -6,6 +6,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using SLaks.Rebracer.Services;
 using WpfGrowlNotification;
+using Task = System.Threading.Tasks.Task;
 
 namespace SLaks.Rebracer.Notifications {
 	[Export(typeof(INotificationService))]
@@ -18,6 +19,11 @@ namespace SLaks.Rebracer.Notifications {
 			dte.Events.DTEEvents.OnStartupComplete += DTEEvents_OnStartupComplete;
 		}
 
+		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
+			base.OnRenderSizeChanged(sizeInfo);
+			UpdateLocation();
+		}
+
 		private void DTEEvents_OnStartupComplete() {
 			var wih = new WindowInteropHelper(this);
 			wih.Owner = new IntPtr(dte.MainWindow.HWnd);
@@ -26,7 +32,7 @@ namespace SLaks.Rebracer.Notifications {
 		private void UpdateLocation() {
 			var dteBounds = dte.MainWindow.ActualBounds();
 
-			Left = dteBounds.Right - Width - 20;
+			Left = dteBounds.Right - ActualWidth - 20;
 			Top = dteBounds.Top + 20;
 		}
 

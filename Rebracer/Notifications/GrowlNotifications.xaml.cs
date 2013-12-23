@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace WpfGrowlNotification {
 	public partial class GrowlNotifications {
@@ -40,12 +43,25 @@ namespace WpfGrowlNotification {
 			if (currentNotifications.Count < 1)
 				Hide();
 		}
+		private void NotificationWindow_Loaded(object sender, RoutedEventArgs e) {
+			var element = (Border)sender;
 
-		private void NotificationWindowSizeChanged(object sender, SizeChangedEventArgs e) {
-			if (e.NewSize.Height > 5)
-				return;
-			var element = sender as FrameworkElement;
-			RemoveNotification((Notification)element.DataContext);
+			// When the hide animation starts, wait until
+			// it finishes, then remove the notification.
+			// I wish I could listen the Completed event,
+			// but I can only get it from a resource, and
+			// I can't figure out how to find the target.
+			SizeChangedEventHandler sizeChangedHandler = null;
+			sizeChangedHandler = async (s, se) => {
+				if (se.PreviousSize.Height == 0)
+					return;
+				element.SizeChanged -= sizeChangedHandler;
+
+				while (element.Height > 0)
+					await Task.Delay(500);
+				RemoveNotification((Notification)element.DataContext);
+			};
+			element.SizeChanged += sizeChangedHandler;
 		}
 	}
 }

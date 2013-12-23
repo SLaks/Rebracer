@@ -5,19 +5,16 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:WpfGrowlNotification"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-		Height="530" Width="300"
+		SizeToContent="WidthAndHeight"
 		ShowActivated="False" AllowsTransparency="True" ShowInTaskbar="False" 
 		WindowStyle="None" Background="Transparent" Topmost="True" UseLayoutRounding="True">
 	<Window.Resources>
-		<Storyboard x:Key="CollapseStoryboard">
-			<DoubleAnimation From="100" To="0" Storyboard.TargetProperty="Height" Duration="0:0:1"/>
-		</Storyboard>
 		<DataTemplate x:Key="MessageTemplate" DataType="Model:Notification">
-			<Border x:Name="NotificationWindow" SizeChanged="NotificationWindowSizeChanged"
+			<Border x:Name="NotificationWindow" Loaded="NotificationWindow_Loaded"
 						Background="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBackgroundGradientBrushKey}}"
 						BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBorderBrushKey}}"
-						BorderThickness="1" Margin="10">
-				<Grid Height="100" Width="280" Margin="6">
+						BorderThickness="1" Padding="12" Margin="0 0 0 20" Height="100" Width="280">
+				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"></RowDefinition>
 						<RowDefinition Height="*"></RowDefinition>
@@ -74,15 +71,19 @@
 				</Trigger>
 				<EventTrigger RoutedEvent="Button.Click" SourceName="CloseButton">
 					<BeginStoryboard>
-						<Storyboard >
-							<DoubleAnimation Storyboard.TargetName="NotificationWindow" From="1" To="0" Storyboard.TargetProperty="(Grid.Opacity)" Duration="0:0:0"/>
+						<Storyboard>
+							<DoubleAnimation Storyboard.TargetName="NotificationWindow" From="1" To="0" Storyboard.TargetProperty="(Grid.Opacity)" Duration="0:0:0.25"/>
 						</Storyboard>
 					</BeginStoryboard>
 				</EventTrigger>
 				<Trigger SourceName="NotificationWindow" Property="Opacity" Value="0">
 					<Setter TargetName="NotificationWindow" Property="Visibility" Value="Hidden"></Setter>
 					<Trigger.EnterActions>
-						<BeginStoryboard Storyboard="{StaticResource CollapseStoryboard}"/>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation Storyboard.TargetName="NotificationWindow" From="100" To="0" Storyboard.TargetProperty="Height" Duration="0:0:1"/>
+							</Storyboard>
+						</BeginStoryboard>
 					</Trigger.EnterActions>
 				</Trigger>
 			</DataTemplate.Triggers>
