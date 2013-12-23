@@ -8,7 +8,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
 		SizeToContent="WidthAndHeight"
 		ShowActivated="False" AllowsTransparency="True" ShowInTaskbar="False" 
-		WindowStyle="None" Background="Transparent" Topmost="True" UseLayoutRounding="True">
+		WindowStyle="None" Background="Transparent" UseLayoutRounding="True">
 	<Window.Resources>
 		<DataTemplate x:Key="MessageTemplate" DataType="Model:Notification">
 			<DataTemplate.Resources>
