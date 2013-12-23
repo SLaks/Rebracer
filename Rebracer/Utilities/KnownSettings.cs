@@ -26,6 +26,20 @@ namespace SLaks.Rebracer.Utilities {
 			return !unsafeSubcategories.Contains(section.Subcategory);
 		}
 
+		static readonly IReadOnlyDictionary<SettingsSection, IReadOnlyCollection<string>> skipProperties = new Dictionary<SettingsSection, IReadOnlyCollection<string>>{
+			// Cannot read: Exception occurred. (Exception from HRESULT: 0x80020009 (DISP_E_EXCEPTION))
+			{ new SettingsSection("TextEditor", "C/C++ Specific"), new [] { "IntellisenseOptions" } },
+			// Cannot write: Member not found. (Exception from HRESULT: 0x80020003 (DISP_E_MEMBERNOTFOUND))
+			{ new SettingsSection("TextEditor", "JavaScript Specific"), new [] { "ImplicitReferences" } }
+		};
+		///<summary>Checks whether a specific property should be skipped to to persistence issues.</summary>
+		public static bool ShouldSkip(SettingsSection section, string property) {
+			IReadOnlyCollection<string> set;
+			if (!skipProperties.TryGetValue(section, out set))
+				return false;
+			return set.Contains(property);
+		}
+
 		///<summary>The options categories that should be included by default when creating a new settings file.</summary>
 		///<remarks>Existing files will use whatever categories exist in their XML.</remarks>
 		[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes", Justification = "Class is immutable")]

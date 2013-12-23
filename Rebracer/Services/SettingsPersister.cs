@@ -66,19 +66,23 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		XElement XmlValue(SettingsSection section, Property prop) {
+			string name = prop.Name;
+			if (KnownSettings.ShouldSkip(section, name))
+				return null;
+
 			object value;
 			try {
 				value = prop.Value;
 			} catch (COMException ex) {
-				logger.Log("An error occurred while saving " + section + "#" + prop.Name + ": " + ex.Message);
+				logger.Log((string)("An error occurred while saving " + section + "#" + name + ": " + ex.Message));
 				return null;
 			}
 			var collection = value as ICollection;
 			if (collection == null)
-				return new XElement("PropertyValue", new XAttribute("name", prop.Name), value);
+				return new XElement("PropertyValue", new XAttribute("name", name), value);
 
 			return new XElement("PropertyValue",
-				new XAttribute("name", prop.Name),
+				new XAttribute("name", name),
 				new XAttribute("ArrayType", "VT_VARIANT"),
 				new XAttribute("ArrayElementCount", collection.Count),
 				((IEnumerable<object>)value)
@@ -105,10 +109,13 @@ namespace SLaks.Rebracer.Services {
 				}
 
 				foreach (var property in section.Item2.Elements("PropertyValue")) {
+					string name = property.Attribute("name").Value;
+					if (KnownSettings.ShouldSkip(section.Item1, name))
+						continue;
 					try {
-						container.Item(property.Attribute("name").Value).Value = VsValue(property);
+						container.Item(name).Value = VsValue(property);
 					} catch (Exception ex) {
-						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + property.Attribute("name").Value + " from settings file.  Error: " + ex.Message);
+						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + name + " from settings file.  Error: " + ex.Message);
 					}
 				}
 			}
