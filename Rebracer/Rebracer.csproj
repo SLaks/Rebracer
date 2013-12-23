@@ -160,6 +160,7 @@
     <Compile Include="Services\IAutoActivatingService.cs" />
     <Compile Include="Services\ILogger.cs" />
     <Compile Include="Services\INotificationService.cs" />
+    <Compile Include="Services\SettingsFileUserNotifier.cs" />
     <Compile Include="Services\SettingsLocator.cs" />
     <Compile Include="Services\CreateSolutionSettingsCommand.cs" />
     <Compile Include="Services\SolutionListener.cs" />

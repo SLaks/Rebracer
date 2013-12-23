@@ -38,6 +38,7 @@ namespace SLaks.Rebracer.Services {
 				stream.SetLength(0);
 				xml.Save(stream);
 				logger.Log("Saved changed settings to " + SettingsPath);
+				OnSettingsSaved();
 				return true;
 			}
 		}
@@ -111,6 +112,7 @@ namespace SLaks.Rebracer.Services {
 					}
 				}
 			}
+			OnSettingsLoaded();
 		}
 		static object VsValue(XElement elem) {
 			if (elem.Elements().Any())
@@ -141,6 +143,7 @@ namespace SLaks.Rebracer.Services {
 			UpdateSettingsXml(xml);
 			xml.Save(path);
 			SettingsPath = path;
+			OnSettingsFileCreated();
 		}
 		bool IsPresent(SettingsSection section) {
 			try {
@@ -161,5 +164,37 @@ namespace SLaks.Rebracer.Services {
 			logger.Log("Loading settings from " + path);
 			LoadSettings();
 		}
+
+		///<summary>Occurs when new settings are applied from a settings file.</summary>
+		public event EventHandler SettingsLoaded;
+		///<summary>Raises the SettingsLoaded event.</summary>
+		void OnSettingsLoaded() { OnSettingsLoaded(EventArgs.Empty); }
+		///<summary>Raises the SettingsLoaded event.</summary>
+		///<param name="e">An EventArgs object that provides the event data.</param>
+		void OnSettingsLoaded(EventArgs e) {
+			if (SettingsLoaded != null)
+				SettingsLoaded(this, e);
+		}
+		///<summary>Occurs when settings are saved to a settings file.  This event is only raised if the file is actually modified.</summary>
+		public event EventHandler SettingsSaved;
+		///<summary>Raises the SettingsSaved event.</summary>
+		void OnSettingsSaved() { OnSettingsSaved(EventArgs.Empty); }
+		///<summary>Raises the SettingsSaved event.</summary>
+		///<param name="e">An EventArgs object that provides the event data.</param>
+		void OnSettingsSaved(EventArgs e) {
+			if (SettingsSaved != null)
+				SettingsSaved(this, e);
+		}
+		///<summary>Occurs when a new settings file is created.</summary>
+		public event EventHandler SettingsFileCreated;
+		///<summary>Raises the SettingsFileCreated event.</summary>
+		void OnSettingsFileCreated() { OnSettingsFileCreated(EventArgs.Empty); }
+		///<summary>Raises the SettingsFileCreated event.</summary>
+		///<param name="e">An EventArgs object that provides the event data.</param>
+		void OnSettingsFileCreated(EventArgs e) {
+			if (SettingsFileCreated != null)
+				SettingsFileCreated(this, e);
+		}
+
 	}
 }
