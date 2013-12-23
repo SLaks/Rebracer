@@ -55,9 +55,8 @@ namespace SLaks.Rebracer {
 
 			var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
-			// This service registers event handlers in its ctor
-			// and does not require further interaction.
-			componentModel.GetService<Services.SolutionListener>();
+			foreach (var service in componentModel.GetExtensions<Services.IAutoActivatingService>())
+				service.Activate();
 
 			var logger = componentModel.GetService<Services.ILogger>();
 

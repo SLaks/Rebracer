@@ -157,6 +157,7 @@
     <Compile Include="Notifications\Notification.cs" />
     <Compile Include="Notifications\ServiceProviderMock.cs" />
     <Compile Include="Services\CommandBase.cs" />
+    <Compile Include="Services\IAutoActivatingService.cs" />
     <Compile Include="Services\ILogger.cs" />
     <Compile Include="Services\INotificationService.cs" />
     <Compile Include="Services\SettingsLocator.cs" />

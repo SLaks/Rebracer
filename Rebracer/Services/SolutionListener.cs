@@ -11,8 +11,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace SLaks.Rebracer.Services {
 	///<summary>Handles Visual Studio events to save and load settings files when appropriate.</summary>
-	[Export]
-	class SolutionListener {
+	[Export(typeof(IAutoActivatingService))]
+	class SolutionListener : IAutoActivatingService {
 		private readonly DTE dte;
 		private readonly SettingsLocator locator;
 		private readonly ILogger logger;
@@ -42,12 +42,13 @@ namespace SLaks.Rebracer.Services {
 
 			dteEvents = dte.Events.DTEEvents;
 			solutionEvents = dte.Events.SolutionEvents;
-
+			projectEvents = ((Events2)dte.Events).ProjectItemsEvents;
+		}
+		public void Activate() {
 			dteEvents.OnStartupComplete += DTEEvents_OnStartupComplete;
 			solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
 			solutionEvents.Opened += SolutionEvents_Opened;
 
-			projectEvents = ((Events2)dte.Events).ProjectItemsEvents;
 			projectEvents.ItemAdded += ProjectEvents_ItemAdded;
 			projectEvents.ItemRemoved += ProjectEvents_ItemRemoved;
 
