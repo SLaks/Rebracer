@@ -1,7 +1,7 @@
 ﻿<Window x:Class="WpfGrowlNotification.GrowlNotifications"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:wcp="clr-namespace:Microsoft.VisualStudio.PlatformUI.Shell.Controls;assembly=Microsoft.VisualStudio.Shell.ViewManager"
-		xmlns:shellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+		xmlns:shellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
 		xmlns:local="clr-namespace:SLaks.Rebracer.Notifications"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:WpfGrowlNotification"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

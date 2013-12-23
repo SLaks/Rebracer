@@ -1,28 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VsSDK.UnitTestLibrary;
+using ServiceProviderRegistration = Microsoft.VisualStudio.Shell.ServiceProvider;
 
 namespace SLaks.Rebracer.Notifications {
-	static class ServiceProviderMock {
+	class ServiceProviderMock : Microsoft.VisualStudio.OLE.Interop.IServiceProvider {
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "These objects become global and must not be disposed yet")]
 		public static void Initialize() {
-			if (ServiceProvider.GlobalProvider.GetService(typeof(SVsSettingsManager)) != null)
+			if (ServiceProviderRegistration.GlobalProvider.GetService(typeof(SVsSettingsManager)) != null)
 				return;
 
 			var esm = ExternalSettingsManager.CreateForApplication(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe");
-			var sp = new OleServiceProvider();
+			var sp = new ServiceProviderMock {
+				serviceInstances = {
+					// Used by ServiceProvider
+					{ typeof(SVsActivityLog).GUID, new DummyLog() },
+					{ typeof(SVsSettingsManager).GUID, new SettingsWrapper(esm) }
+				}
+			};
 
-			// Used by ServiceProvider
-			sp.AddService(typeof(SVsActivityLog), new DummyLog(), false);
-			sp.AddService(typeof(SVsSettingsManager), new SettingsWrapper(esm), true);
 
-			ServiceProvider.CreateFromSetSite(sp);
+			ServiceProviderRegistration.CreateFromSetSite(sp);
+		}
+
+		readonly Dictionary<Guid, object> serviceInstances = new Dictionary<Guid, object>();
+
+		public int QueryService([ComAliasName("Microsoft.VisualStudio.OLE.Interop.REFGUID")]ref Guid guidService, [ComAliasName("Microsoft.VisualStudio.OLE.Interop.REFIID")]ref Guid riid, out IntPtr ppvObject) {
+			object result;
+			if (!serviceInstances.TryGetValue(guidService, out result)) {
+				ppvObject = IntPtr.Zero;
+				return VSConstants.E_NOINTERFACE;
+			}
+			if (riid == VSConstants.IID_IUnknown) {
+				ppvObject = Marshal.GetIUnknownForObject(result);
+				return VSConstants.S_OK;
+			}
+
+			IntPtr unk = IntPtr.Zero;
+			try {
+				unk = Marshal.GetIUnknownForObject(result);
+				result = Marshal.QueryInterface(unk, ref riid, out ppvObject);
+			} finally {
+				if (unk != IntPtr.Zero)
+					Marshal.Release(unk);
+			}
+			return VSConstants.S_OK;
 		}
 
 		class SettingsWrapper : IVsSettingsManager, IDisposable {
