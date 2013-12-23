@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace SLaks.Rebracer.Utilities {
 
 		///<summary>The options categories that should be included by default when creating a new settings file.</summary>
 		///<remarks>Existing files will use whatever categories exist in their XML.</remarks>
+		[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes", Justification = "Class is immutable")]
 		public static readonly IReadOnlyCollection<SettingsSection> DefaultCategories = new ReadOnlyCollection<SettingsSection>(new[] {
 			new SettingsSection("Environment", "TaskList"),
 			new SettingsSection("TextEditor", "CSharp-Specific"),

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SLaks.Rebracer {
 	static class GuidList {
@@ -7,6 +8,8 @@ namespace SLaks.Rebracer {
 
 		public static readonly Guid guidRebracerCmdSet = new Guid(guidRebracerCmdSetString);
 	}
+
+	[SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue", Justification = "This enum is used solely as a container for constants")]
 
 	///<summary>Contains command IDs for commands defined by this package.  These values are defined in the vsct file.</summary>
 	public enum PackageCommand {
