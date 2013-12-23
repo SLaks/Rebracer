@@ -17,7 +17,7 @@
 			<Border x:Name="NotificationWindow" Loaded="NotificationWindow_Loaded"
 						Background="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBackgroundBeginBrushKey}}"
 						BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBorderBrushKey}}"
-						BorderThickness="1" Padding="12" Margin="0 0 0 20" Height="100" Width="280">
+						BorderThickness="1" Padding="12" Margin="0 0 0 20" MinWidth="280" MaxWidth="380">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"></RowDefinition>
@@ -26,13 +26,14 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
 						<ColumnDefinition Width="*"></ColumnDefinition>
+						<ColumnDefinition Width="Auto"></ColumnDefinition>
 					</Grid.ColumnDefinitions>
-					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="80"></Image>
+					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="60"></Image>
 					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"  Margin="2,4,4,2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
-					<wcp:WindowTitleBarButton x:Name="CloseButton" Grid.Column="1" 
+					<wcp:WindowTitleBarButton x:Name="CloseButton" Grid.Column="2" 
 											  HorizontalAlignment="Right" VerticalAlignment="Top" 
-											  Padding="9,10" Margin="0,-12,-12,0"
+											  Padding="9,10" Margin="8,-12,-12,0"
 											  BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
 											  BorderThickness="1,0,0,1"
 											  GlyphForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
@@ -50,7 +51,7 @@
 								  Fill="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}" />
 					</wcp:WindowTitleBarButton>
 
-					<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
+					<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" VerticalAlignment="Top"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
 				</Grid>
 			</Border>
