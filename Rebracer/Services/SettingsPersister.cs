@@ -91,7 +91,7 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		///<summary>Reads settings from the XML file into Visual Studio's global settings.</summary>
-		public void LoadSettings() {
+		private void LoadSettings() {
 			var xml = XDocument.Load(SettingsPath, LoadOptions.PreserveWhitespace);
 
 			foreach (var section in SettingsSection.FromXmlSettingsFile(xml.Root)) {
@@ -119,7 +119,6 @@ namespace SLaks.Rebracer.Services {
 					}
 				}
 			}
-			OnSettingsLoaded();
 		}
 		static object VsValue(XElement elem) {
 			if (elem.Elements().Any())
@@ -167,18 +166,19 @@ namespace SLaks.Rebracer.Services {
 			if (SettingsPath == path)
 				return;
 
+			var oldPath = SettingsPath;
 			SettingsPath = path;
 			logger.Log("Loading settings from " + path);
 			LoadSettings();
+			OnSettingsLoaded(new SettingsFileLoadedEventArgs(oldPath, path));
+
 		}
 
 		///<summary>Occurs when new settings are applied from a settings file.</summary>
-		public event EventHandler SettingsLoaded;
+		public event EventHandler<SettingsFileLoadedEventArgs> SettingsLoaded;
 		///<summary>Raises the SettingsLoaded event.</summary>
-		void OnSettingsLoaded() { OnSettingsLoaded(EventArgs.Empty); }
-		///<summary>Raises the SettingsLoaded event.</summary>
-		///<param name="e">An EventArgs object that provides the event data.</param>
-		void OnSettingsLoaded(EventArgs e) {
+		///<param name="e">An SettingsFileLoadedEventArgs object that provides the event data.</param>
+		void OnSettingsLoaded(SettingsFileLoadedEventArgs e) {
 			if (SettingsLoaded != null)
 				SettingsLoaded(this, e);
 		}
@@ -202,6 +202,14 @@ namespace SLaks.Rebracer.Services {
 			if (SettingsFileCreated != null)
 				SettingsFileCreated(this, e);
 		}
+	}
+	public class SettingsFileLoadedEventArgs : EventArgs {
+		public SettingsFileLoadedEventArgs(string oldPath, string newPath) {
+			OldPath = oldPath;
+			NewPath = newPath;
+		}
 
+		public string OldPath { get; private set; }
+		public string NewPath { get; private set; }
 	}
 }

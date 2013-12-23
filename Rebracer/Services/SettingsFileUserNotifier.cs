@@ -46,7 +46,10 @@ namespace SLaks.Rebracer.Services {
 			notifier.ShowNotification("Rebracer Settings File Created", "Created new " + LocationDisplayName + ", initialized from current settings");
 		}
 
-		private void Persister_SettingsLoaded(object sender, EventArgs e) {
+		private void Persister_SettingsLoaded(object sender, SettingsFileLoadedEventArgs e) {
+			// Don't notify when applying global settings at launch
+			if (string.IsNullOrEmpty(e.OldPath) && e.NewPath == locator.UserSettingsFile)
+				return;
 			notifier.ShowNotification("Rebracer Settings Loaded", "Applied " + LocationDisplayName);
 		}
 
