@@ -1,16 +1,14 @@
-﻿extern alias settings;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using ServiceProviderRegistration = Microsoft.VisualStudio.Shell.ServiceProvider;
-using Settings = settings::Microsoft.VisualStudio.Settings;
 
 namespace SLaks.Rebracer.Notifications {
 	class ServiceProviderMock : Microsoft.VisualStudio.OLE.Interop.IServiceProvider {
@@ -19,7 +17,7 @@ namespace SLaks.Rebracer.Notifications {
 			if (ServiceProviderRegistration.GlobalProvider.GetService(typeof(SVsSettingsManager)) != null)
 				return;
 
-			var esm = Settings.ExternalSettingsManager.CreateForApplication(GetVersionExe(FindVsVersions().LastOrDefault().ToString()));
+			var esm = ExternalSettingsManager.CreateForApplication(GetVersionExe(FindVsVersions().LastOrDefault().ToString()));
 			var sp = new ServiceProviderMock {
 				serviceInstances = {
 					// Used by ServiceProvider
@@ -76,9 +74,9 @@ namespace SLaks.Rebracer.Notifications {
 		}
 
 		class SettingsWrapper : IVsSettingsManager, IDisposable {
-			readonly Settings.ExternalSettingsManager inner;
+			readonly ExternalSettingsManager inner;
 
-			public SettingsWrapper(Settings.ExternalSettingsManager inner) {
+			public SettingsWrapper(ExternalSettingsManager inner) {
 				this.inner = inner;
 			}
 
@@ -87,7 +85,7 @@ namespace SLaks.Rebracer.Notifications {
 			}
 
 			public int GetApplicationDataFolder([ComAliasName("Microsoft.VisualStudio.Shell.Interop.VSAPPLICATIONDATAFOLDER")]uint folder, out string folderPath) {
-				folderPath = inner.GetApplicationDataFolder((Settings.ApplicationDataFolder)folder);
+				folderPath = inner.GetApplicationDataFolder((ApplicationDataFolder)folder);
 				return 0;
 			}
 
@@ -113,20 +111,20 @@ namespace SLaks.Rebracer.Notifications {
 			}
 
 			public int GetReadOnlySettingsStore([ComAliasName("Microsoft.VisualStudio.Shell.Interop.VSSETTINGSSCOPE")]uint scope, out IVsSettingsStore store) {
-				store = new StoreWrapper(inner.GetReadOnlySettingsStore((Settings.SettingsScope)scope));
+				store = new StoreWrapper(inner.GetReadOnlySettingsStore((SettingsScope)scope));
 				return 0;
 			}
 
 			public int GetWritableSettingsStore([ComAliasName("Microsoft.VisualStudio.Shell.Interop.VSSETTINGSSCOPE")]uint scope, out IVsWritableSettingsStore writableStore) {
-				writableStore = (IVsWritableSettingsStore)inner.GetReadOnlySettingsStore((Settings.SettingsScope)scope);
+				writableStore = (IVsWritableSettingsStore)inner.GetReadOnlySettingsStore((SettingsScope)scope);
 				return 0;
 			}
 		}
 
 		class StoreWrapper : IVsSettingsStore {
-			readonly Settings.SettingsStore inner;
+			readonly SettingsStore inner;
 
-			public StoreWrapper(Settings.SettingsStore inner) {
+			public StoreWrapper(SettingsStore inner) {
 				this.inner = inner;
 			}
 

@@ -1,15 +1,11 @@
-﻿extern alias settings;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EnvDTE;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
-using Settings = settings::Microsoft.VisualStudio.Settings;
 
 namespace SLaks.Rebracer.Services {
 
@@ -22,7 +18,7 @@ namespace SLaks.Rebracer.Services {
 
 		[ImportingConstructor]
 		public SettingsLocator(SVsServiceProvider sp) {
-			userFolder = new ShellSettingsManager(sp).GetApplicationDataFolder(Settings.ApplicationDataFolder.RoamingSettings);
+			userFolder = new ShellSettingsManager(sp).GetApplicationDataFolder(ApplicationDataFolder.RoamingSettings);
 		}
 
 		///<summary>Gets the path to the user global settings file, to be used in the absence of a solution settings file.</summary>
