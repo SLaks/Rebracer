@@ -1,15 +1,55 @@
 ﻿using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Internal.VisualStudio.PlatformUI;
+using System.Windows;
+using System.Windows.Media;
 using Microsoft.Internal.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 
 namespace SLaks.Rebracer.Notifications {
+	// Copied from similar class in Microsoft.VisualStudio.PlatformUI,
+	// in Microsoft.VisualStudio.Shell.11.0 & higher.  This way, we do
+	// not reference any VS11+ DLLs, avoiding all conflicts.
+	// The ThemeResourceKey class is OK to reference; it is defined in
+	// Microsoft.VisualStudio.Shell.Immutable.11.0, which doesn't have
+	// conflicting references.  We will probably need to ship that DLL
+	// for pure VS2010 support.
+	// TODO: Inherit this class & pick entries in VsColors for VS2010.
+	public abstract class DeferredResourceDictionaryBase : ResourceDictionary {
+		protected override void OnGettingValue(object key, ref object value, out bool canCache) {
+			ThemeResourceKey themeResourceKey = value as ThemeResourceKey;
+			if (themeResourceKey == null) {
+				base.OnGettingValue(key, ref value, out canCache);
+				return;
+			}
+			if (key is ThemeResourceKey) {
+				value = this.RealizeValue(themeResourceKey);
+				canCache = true;
+				return;
+			}
+			value = base[themeResourceKey];
+			canCache = true;
+		}
+		protected abstract uint GetRgbaColorValue(ThemeResourceKey key);
+		private object RealizeValue(ThemeResourceKey key) {
+			Color color = ToColorFromRgba(this.GetRgbaColorValue(key));
+			if (IsBrushKeyType(key.KeyType)) {
+				var brush = new SolidColorBrush(color);
+				brush.Freeze();
+				return brush;
+			}
+			return color;
+		}
+		private static bool IsBrushKeyType(ThemeResourceKeyType keyType) {
+			return keyType == ThemeResourceKeyType.BackgroundBrush || keyType == ThemeResourceKeyType.ForegroundBrush;
+		}
+
+		static Color ToColorFromRgba(uint colorValue) {
+			return Color.FromArgb((byte)(colorValue >> 24), (byte)colorValue, (byte)(colorValue >> 8), (byte)(colorValue >> 16));
+		}
+	}
+
 	public class DesignerThemeDictionary : DeferredResourceDictionaryBase {
 
 		// We must access everything from these classes using dynamic due to NoPIA conflicts.
@@ -29,6 +69,8 @@ namespace SLaks.Rebracer.Notifications {
 			get { return themeIndex; }
 			set { themeIndex = value; LoadTheme(value); }
 		}
+
+		// Based on Microsoft.VisualStudio.Platform.WindowManagement.ResourceSynchronizer.AddSolidColorKeys()
 		public void LoadTheme(int index) {
 			if (service == null)
 				return;
@@ -60,11 +102,13 @@ namespace SLaks.Rebracer.Notifications {
 		}
 
 		// Microsoft.VisualStudio.Platform.WindowManagement.ColorNameTranslator
+		static readonly Guid environmentColors = new Guid("{624ed9c3-bdfd-41fa-96c3-7c824ea32e3d}");
 		static int VsColorFromName(ColorName colorName) {
-			int result;
-			if (colorName.Category == EnvironmentColors.Category && VsColors.TryGetColorIDFromBaseKey(colorName.Name, out result)) {
-				return result;
-			}
+			// Stolen from VsColors.TryGetColorIDFromBaseKey, which is new to 2012
+			try {
+				if (colorName.Category == environmentColors)
+					return VsColors.GetColorID("VsColor." + colorName.Name);
+			} catch (ArgumentOutOfRangeException) { }
 			return 0;
 		}
 

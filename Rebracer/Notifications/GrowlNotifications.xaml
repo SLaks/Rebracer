@@ -1,7 +1,6 @@
 ﻿<Window x:Class="WpfGrowlNotification.GrowlNotifications"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:wcp="clr-namespace:Microsoft.VisualStudio.PlatformUI.Shell.Controls;assembly=Microsoft.VisualStudio.Shell.ViewManager"
-		xmlns:shellui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
 		xmlns:local="clr-namespace:SLaks.Rebracer.Notifications"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:WpfGrowlNotification"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,8 +14,8 @@
 				<local:DesignerThemeDictionary />
 			</DataTemplate.Resources>
 			<Border x:Name="NotificationWindow" Loaded="NotificationWindow_Loaded"
-						Background="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBackgroundBeginBrushKey}}"
-						BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverBorderBrushKey}}"
+						Background="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverBackgroundBeginBrushKey}}"
+						BorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverBorderBrushKey}}"
 						BorderThickness="1" Padding="12" Margin="0 0 0 20" MinWidth="280" MaxWidth="380">
 				<Grid>
 					<Grid.RowDefinitions>
@@ -29,21 +28,21 @@
 						<ColumnDefinition Width="Auto"></ColumnDefinition>
 					</Grid.ColumnDefinitions>
 					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="60"></Image>
-					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
+					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"  Margin="2,4,4,2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
 					<wcp:WindowTitleBarButton x:Name="CloseButton" Grid.Column="2" 
 											  HorizontalAlignment="Right" VerticalAlignment="Top" 
 											  Padding="9,10" Margin="8,-12,-12,0"
-											  BorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
+											  BorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
 											  BorderThickness="1,0,0,1"
-											  GlyphForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
-											  HoverBackground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveBrushKey}}" 
-											  HoverBorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveBorderBrushKey}}"
-											  HoverForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonHoverActiveGlyphBrushKey}}" 
+											  GlyphForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
+											  HoverBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBrushKey}}" 
+											  HoverBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBorderBrushKey}}"
+											  HoverForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveGlyphBrushKey}}" 
 											  HoverBorderThickness="1,0,0,1"
-											  PressedBackground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownBrushKey}}" 
-											  PressedBorderBrush="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownBorderBrushKey}}" 
-											  PressedForeground="{DynamicResource {x:Static shellui:EnvironmentColors.ToolWindowButtonDownActiveGlyphBrushKey}}" 
+											  PressedBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBrushKey}}" 
+											  PressedBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBorderBrushKey}}" 
+											  PressedForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownActiveGlyphBrushKey}}" 
 											  PressedBorderThickness="1,0,0,1" 
 											  AutomationProperties.Name="Close" AutomationProperties.AutomationId="Close" 
 											  ToolTip="Close">
@@ -51,7 +50,7 @@
 								  Fill="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}" />
 					</wcp:WindowTitleBarButton>
 
-					<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static shellui:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
+					<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" VerticalAlignment="Top"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
 				</Grid>
 			</Border>

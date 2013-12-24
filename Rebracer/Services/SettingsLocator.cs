@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
-using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
-using Settings = global::Microsoft.VisualStudio.Settings;
+using Settings = settings::Microsoft.VisualStudio.Settings;
 
 namespace SLaks.Rebracer.Services {
 
