@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Settings;
@@ -11,6 +14,38 @@ using Microsoft.Win32;
 using ServiceProviderRegistration = Microsoft.VisualStudio.Shell.ServiceProvider;
 
 namespace SLaks.Rebracer.Notifications {
+	static class AssemblyResolverHack {
+		static bool handled;
+		public static void AddHandler() {
+			if (handled) {
+				Debug.WriteLine("Skipping duplicate handler");
+				return;
+			}
+			Debug.WriteLine("Catching AssemblyResolve!");
+
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+			Assembly.Load("Microsoft.VisualStudio.Shell.10.0");
+			Assembly.Load("Microsoft.VisualStudio.Shell.ViewManager");
+			handled = true;
+		}
+		static readonly Version vsVersion = ServiceProviderMock.FindVsVersions().Last();
+		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+			Debug.WriteLine("Requesting " + args.Name + ",\tfrom " + (args.RequestingAssembly == null ? "(unknown)" : args.RequestingAssembly.FullName));
+
+			// Use latest strong name & version when trying to load SDK assemblies
+			if (!args.Name.StartsWith("Microsoft.VisualStudio", StringComparison.OrdinalIgnoreCase))
+				return null;
+
+			var name = new AssemblyName(args.Name.Replace("10", vsVersion.Major.ToString()));
+			name.Version = vsVersion;
+
+			name.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=b03f5f7f11d50a3a").GetPublicKeyToken());
+			name.CultureInfo = CultureInfo.InvariantCulture;
+
+			return Assembly.Load(name);
+		}
+	}
+
 	class ServiceProviderMock : Microsoft.VisualStudio.OLE.Interop.IServiceProvider {
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "These objects become global and must not be disposed yet")]
 		public static void Initialize() {
@@ -19,7 +54,8 @@ namespace SLaks.Rebracer.Notifications {
 
 			var esm = ExternalSettingsManager.CreateForApplication(GetVersionExe(FindVsVersions().LastOrDefault().ToString()));
 			var sp = new ServiceProviderMock {
-				serviceInstances = {
+				serviceInstances =
+				{
 					// Used by ServiceProvider
 					{ typeof(SVsActivityLog).GUID, new DummyLog() },
 					{ typeof(SVsSettingsManager).GUID, new SettingsWrapper(esm) }
@@ -30,18 +66,17 @@ namespace SLaks.Rebracer.Notifications {
 			ServiceProviderRegistration.CreateFromSetSite(sp);
 		}
 
-		public static IEnumerable<decimal?> FindVsVersions() {
+		public static IEnumerable<Version> FindVsVersions() {
 			using (var software = Registry.LocalMachine.OpenSubKey("SOFTWARE"))
 			using (var ms = software.OpenSubKey("Microsoft"))
 			using (var vs = ms.OpenSubKey("VisualStudio"))
 				return vs.GetSubKeyNames()
 						.Select(s => {
-							decimal v;
-							if (!decimal.TryParse(s, out v))
-								return new decimal?();
+							Version v;
+							Version.TryParse(s, out v);
 							return v;
 						})
-				.Where(d => d.HasValue)
+				.Where(d => d != null)
 				.OrderBy(d => d);
 		}
 
