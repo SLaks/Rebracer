@@ -18,7 +18,7 @@ namespace SLaks.Rebracer.Notifications {
 		dynamic currentTheme;
 		readonly dynamic service;
 		public DesignerThemeDictionary() {
-			if (ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel)) != null)
+			if (ServiceProvider.GlobalProvider.GetService(new Guid("FD57C398-FDE3-42c2-A358-660F269CBE43")) != null)
 				return; // Do nothing when hosted in VS
 			ServiceProviderMock.Initialize();
 			service = Activator.CreateInstance(Type.GetType("Microsoft.VisualStudio.Platform.WindowManagement.ColorThemeService, Microsoft.VisualStudio.Platform.WindowManagement"));
