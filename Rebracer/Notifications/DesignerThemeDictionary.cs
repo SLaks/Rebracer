@@ -84,53 +84,6 @@ namespace SLaks.Rebracer.Notifications {
 	}
 }
 namespace Microsoft.Internal.VisualStudio.Shell.Interop {
-
-	[CompilerGenerated, Guid("0D915B59-2ED7-472A-9DE8-9161737EA1C5"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeIdentifier]
-	[ComImport]
-	public interface SVsColorThemeService {
-	}
-	[CompilerGenerated, Guid("EAB552CF-7858-4F05-8435-62DB6DF60684"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeIdentifier]
-	[ComImport]
-	public interface IVsColorThemeService {
-		IVsColorThemes Themes {
-			[return: MarshalAs(UnmanagedType.Interface)]
-			get;
-		}
-		IVsColorNames ColorNames {
-			[return: MarshalAs(UnmanagedType.Interface)]
-			get;
-		}
-		IVsColorTheme CurrentTheme {
-			[return: MarshalAs(UnmanagedType.Interface)]
-			get;
-		}
-		void NotifyExternalThemeChanged();
-		uint GetCurrentVsColorValue([In] int vsSysColor);
-		uint GetCurrentColorValue([In] ref Guid rguidColorCategory, [MarshalAs(UnmanagedType.LPWStr)] [In] string pszColorName, [In] uint dwColorType);
-		uint GetCurrentEncodedColor([In] ref Guid rguidColorCategory, [MarshalAs(UnmanagedType.LPWStr)] [In] string pszColorName, [In] uint dwColorType);
-	}
-	[CompilerGenerated, Guid("98192AFE-75B9-4347-82EC-FF312C1995D8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeIdentifier]
-	[ComImport]
-	public interface IVsColorThemes {
-		IVsColorTheme this[[In] int index] {
-			[return: MarshalAs(UnmanagedType.Interface)]
-			get;
-		}
-		int Count { get; }
-		[return: MarshalAs(UnmanagedType.Interface)]
-		IVsColorTheme GetThemeFromId([In] Guid ThemeId);
-		[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalType = "System.Runtime.InteropServices.CustomMarshalers.EnumeratorToEnumVariantMarshaler")]
-		IEnumerator GetEnumerator();
-	}
-	[CompilerGenerated, Guid("92144F7A-61DE-439B-AA66-13BE7CDEC857"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeIdentifier]
-	[ComImport]
-	public interface IVsColorNames {
-		ColorName this[[In] int index] { get; }
-		int Count { get; }
-		ColorName GetNameFromVsColor([In] int vsSysColor);
-		[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalType = "System.Runtime.InteropServices.CustomMarshalers.EnumeratorToEnumVariantMarshaler")]
-		IEnumerator GetEnumerator();
-	}
 	[CompilerGenerated, Guid("413D8344-C0DB-4949-9DBC-69C12BADB6AC"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeIdentifier]
 	[ComImport]
 	public interface IVsColorTheme {
