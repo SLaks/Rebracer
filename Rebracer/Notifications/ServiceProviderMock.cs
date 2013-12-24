@@ -1,4 +1,5 @@
 ﻿extern alias settings;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -6,10 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Interop;
-using Settings = settings::Microsoft.VisualStudio.Settings;
+using Microsoft.Win32;
 using ServiceProviderRegistration = Microsoft.VisualStudio.Shell.ServiceProvider;
+using Settings = settings::Microsoft.VisualStudio.Settings;
 
 namespace SLaks.Rebracer.Notifications {
 	class ServiceProviderMock : Microsoft.VisualStudio.OLE.Interop.IServiceProvider {
@@ -18,7 +19,7 @@ namespace SLaks.Rebracer.Notifications {
 			if (ServiceProviderRegistration.GlobalProvider.GetService(typeof(SVsSettingsManager)) != null)
 				return;
 
-			var esm = Settings.ExternalSettingsManager.CreateForApplication(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe");
+			var esm = Settings.ExternalSettingsManager.CreateForApplication(GetVersionExe(FindVsVersions().LastOrDefault().ToString()));
 			var sp = new ServiceProviderMock {
 				serviceInstances = {
 					// Used by ServiceProvider
@@ -29,6 +30,25 @@ namespace SLaks.Rebracer.Notifications {
 
 
 			ServiceProviderRegistration.CreateFromSetSite(sp);
+		}
+
+		public static IEnumerable<decimal?> FindVsVersions() {
+			using (var software = Registry.LocalMachine.OpenSubKey("SOFTWARE"))
+			using (var ms = software.OpenSubKey("Microsoft"))
+			using (var vs = ms.OpenSubKey("VisualStudio"))
+				return vs.GetSubKeyNames()
+						.Select(s => {
+							decimal v;
+							if (!decimal.TryParse(s, out v))
+								return new decimal?();
+							return v;
+						})
+				.Where(d => d.HasValue)
+				.OrderBy(d => d);
+		}
+
+		public static string GetVersionExe(string version) {
+			return Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\" + version + @"\Setup\VS", "EnvironmentPath", null) as string;
 		}
 
 		readonly Dictionary<Guid, object> serviceInstances = new Dictionary<Guid, object>();
