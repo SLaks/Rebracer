@@ -30,6 +30,8 @@ namespace SLaks.Rebracer.Notifications {
 		}
 
 		private void UpdateLocation() {
+			if (dte.MainWindow == null)
+				return;
 			var dteBounds = dte.MainWindow.ActualBounds();
 
 			Left = dteBounds.Right - ActualWidth - 20;
