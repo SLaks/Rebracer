@@ -58,25 +58,6 @@ namespace SLaks.Rebracer {
 			foreach (var service in componentModel.GetExtensions<Services.IAutoActivatingService>())
 				service.Activate();
 
-			var logger = componentModel.GetService<Services.ILogger>();
-
-			var locator = componentModel.GetService<Services.SettingsLocator>();
-			// On first launch, populate the global settings file
-			// before loading any solution settings.
-			if (!File.Exists(locator.UserSettingsFile)) {
-				logger.Log("Creating user settings file to store current global settings");
-				componentModel.GetService<Services.SettingsPersister>().CreateSettingsFile(locator.UserSettingsFile,
-					"Rebracer User Settings File",
-					"This file contains your global Visual Studio settings.",
-					"Rebracer uses this file to restore your settings after",
-					"closing a solution that specifies its own settings.",
-					"This file will be automatically updated by Rebracer as",
-					"you change settings in Visual Studio"
-				);
-			}
-			// If the global file already exists, wait for SolutionListener
-			// to restore it after Visual Studio launches, for users 
-
 			var mcs = (IMenuCommandService)GetService(typeof(IMenuCommandService));
 			foreach (var command in componentModel.GetExtensions<Services.CommandBase>()) {
 				mcs.AddCommand(command.Command);

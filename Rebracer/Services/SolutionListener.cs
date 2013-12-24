@@ -85,6 +85,22 @@ namespace SLaks.Rebracer.Services {
 		}
 
 		private void DTEEvents_OnStartupComplete() {
+			// On first launch, populate the global settings file
+			// before loading any solution settings. This must be
+			// done after the MainWindow is shown, or showing the
+			// notification will look weird.
+			if (!File.Exists(locator.UserSettingsFile)) {
+				logger.Log("Creating user settings file to store current global settings");
+				persister.CreateSettingsFile(locator.UserSettingsFile,
+					"Rebracer User Settings File",
+					"This file contains your global Visual Studio settings.",
+					"Rebracer uses this file to restore your settings after",
+					"closing a solution that specifies its own settings.",
+					"This file will be automatically updated by Rebracer as",
+					"you change settings in Visual Studio"
+				);
+			}
+
 			// When VS is launched, wait until we know
 			// whether the used opened a solution, and
 			// activate the solution or global file.
