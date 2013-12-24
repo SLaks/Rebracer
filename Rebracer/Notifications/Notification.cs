@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace WpfGrowlNotification {
@@ -39,5 +42,30 @@ namespace WpfGrowlNotification {
 		public event PropertyChangedEventHandler PropertyChanged;
 	}
 	// For design-time data context
-	public class NotificationCollection : ObservableCollection<Notification> { }
+	public class NotificationCollection : ObservableCollection<Notification> {
+		static NotificationCollection() {
+			Debug.WriteLine("In static ctor!");
+			System.Windows.Forms.MessageBox.Show("In static ctor!\n\n" + Environment.StackTrace);
+
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+			Assembly.Load("Microsoft.VisualStudio.Shell.10.0");
+			Assembly.Load("Microsoft.VisualStudio.Shell.ViewManager");
+		}
+
+		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
+			Debug.WriteLine("Requesting " + args.Name + ",\tfrom " + (args.RequestingAssembly == null ? "(unknown)" : args.RequestingAssembly.FullName));
+
+			// Use latest strong name & version when trying to load SDK assemblies
+			if (!args.Name.StartsWith("Microsoft.VisualStudio", StringComparison.OrdinalIgnoreCase))
+				return null;
+
+			var name = new AssemblyName(args.Name.Replace("10", "12"));
+			name.Version = new Version("12.0.0.0");
+
+			name.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=b03f5f7f11d50a3a").GetPublicKeyToken());
+			name.CultureInfo = CultureInfo.InvariantCulture;
+
+			return Assembly.Load(name);
+		}
+	}
 }

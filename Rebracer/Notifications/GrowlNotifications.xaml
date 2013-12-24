@@ -1,6 +1,5 @@
 ﻿<Window x:Class="WpfGrowlNotification.GrowlNotifications"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:wcp="clr-namespace:Microsoft.VisualStudio.PlatformUI.Shell.Controls;assembly=Microsoft.VisualStudio.Shell.ViewManager"
 		xmlns:local="clr-namespace:SLaks.Rebracer.Notifications"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:WpfGrowlNotification"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -30,7 +29,7 @@
 					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="60"></Image>
 					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"  Margin="2,4,4,2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
-					<wcp:WindowTitleBarButton x:Name="CloseButton" Grid.Column="2" 
+					<Model:TitleButton x:Name="CloseButton" Grid.Column="2" 
 											  HorizontalAlignment="Right" VerticalAlignment="Top" 
 											  Padding="9,10" Margin="8,-12,-12,0"
 											  BorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
@@ -48,7 +47,7 @@
 											  ToolTip="Close">
 						<Path Name="HideButtonPath" x:Uid="HideButtonPath" Stretch="Uniform" Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" 
 								  Fill="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}" />
-					</wcp:WindowTitleBarButton>
+					</Model:TitleButton>
 
 					<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" VerticalAlignment="Top"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>

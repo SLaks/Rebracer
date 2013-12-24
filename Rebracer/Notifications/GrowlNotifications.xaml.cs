@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.VisualStudio.PlatformUI.Shell.Controls;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
@@ -63,7 +64,7 @@ namespace WpfGrowlNotification {
 		}
 	}
 
-
+	class TitleButton : GlyphButton { }
 	// Stolen from Microsoft.VisualStudio.PlatformUI.EnvironmentColors
 	// in Microsoft.VisualStudio.Shell.11.0 & higher.  This way, we do
 	// not reference any VS11+ DLLs, avoiding all conflicts.
