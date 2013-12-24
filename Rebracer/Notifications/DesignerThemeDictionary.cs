@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.Internal.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Platform.WindowManagement;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 
@@ -22,7 +21,7 @@ namespace SLaks.Rebracer.Notifications {
 			if (ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel)) != null)
 				return; // Do nothing when hosted in VS
 			ServiceProviderMock.Initialize();
-			service = Activator.CreateInstance(typeof(WindowFrameTitle).Assembly.GetType("Microsoft.VisualStudio.Platform.WindowManagement.ColorThemeService"));
+			service = Activator.CreateInstance(Type.GetType("Microsoft.VisualStudio.Platform.WindowManagement.ColorThemeService, Microsoft.VisualStudio.Platform.WindowManagement"));
 			ThemeIndex = 0;
 		}
 		int themeIndex;

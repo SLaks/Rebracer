@@ -15,7 +15,6 @@
 	</Installation>
 	<Dependencies>
 		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-		<Dependency Id="Microsoft.VisualStudio.MPF.10.0" DisplayName="Visual Studio MPF 10.0" d:Source="Installed" Version="[10.0]" />
 	</Dependencies>
 	<Assets>
 		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
