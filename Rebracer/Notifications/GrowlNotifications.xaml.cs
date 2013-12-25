@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -115,6 +116,8 @@ namespace WpfGrowlNotification {
 			get { return (Brush)GetValue(PressedForegroundProperty); }
 			set { SetValue(PressedForegroundProperty, value); }
 		}
+
+		[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
 		static GlyphButton() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(GlyphButton), new FrameworkPropertyMetadata(typeof(GlyphButton)));
 		}

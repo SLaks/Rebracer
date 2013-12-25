@@ -36,7 +36,7 @@ namespace SLaks.Rebracer.Notifications {
 			if (!args.Name.StartsWith("Microsoft.VisualStudio", StringComparison.OrdinalIgnoreCase))
 				return null;
 
-			var name = new AssemblyName(args.Name.Replace("10", vsVersion.Major.ToString()));
+			var name = new AssemblyName(args.Name.Replace("10", vsVersion.Major.ToString(CultureInfo.InvariantCulture)));
 			name.Version = vsVersion;
 
 			name.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=b03f5f7f11d50a3a").GetPublicKeyToken());
@@ -62,8 +62,14 @@ namespace SLaks.Rebracer.Notifications {
 				}
 			};
 
-
 			ServiceProviderRegistration.CreateFromSetSite(sp);
+			// The designer loads Microsoft.VisualStudio.Shell.12.0,
+			// which we cannot reference directly to avoid  breaking
+			// older versions.  Therefore, I set its global property
+			// using Reflection instead.
+			Type.GetType("Microsoft.VisualStudio.Shell.ServiceProvider, Microsoft.VisualStudio.Shell.12.0")
+				.GetMethod("CreateFromSetSite", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static)
+				.Invoke(null, new[] { sp });
 		}
 
 		public static IEnumerable<Version> FindVsVersions() {
