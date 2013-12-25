@@ -68,6 +68,7 @@ namespace WpfGrowlNotification {
 	// it at all.
 	//http://twitter.com/jaredpar/status/415661754979717120
 	public class GlyphButton : Button {
+		// Removed unused IsChecked property.
 		public static readonly DependencyProperty PressedBackgroundProperty = DependencyProperty.Register("PressedBackground", typeof(Brush), typeof(GlyphButton));
 		public static readonly DependencyProperty PressedBorderBrushProperty = DependencyProperty.Register("PressedBorderBrush", typeof(Brush), typeof(GlyphButton));
 		public static readonly DependencyProperty PressedBorderThicknessProperty = DependencyProperty.Register("PressedBorderThickness", typeof(Thickness), typeof(GlyphButton));
@@ -77,7 +78,6 @@ namespace WpfGrowlNotification {
 		public static readonly DependencyProperty GlyphForegroundProperty = DependencyProperty.Register("GlyphForeground", typeof(Brush), typeof(GlyphButton));
 		public static readonly DependencyProperty HoverForegroundProperty = DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(GlyphButton));
 		public static readonly DependencyProperty PressedForegroundProperty = DependencyProperty.Register("PressedForeground", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register("IsChecked", typeof(bool), typeof(GlyphButton));
 
 		public Brush PressedBackground {
 			get { return (Brush)GetValue(PressedBackgroundProperty); }
@@ -114,10 +114,6 @@ namespace WpfGrowlNotification {
 		public Brush PressedForeground {
 			get { return (Brush)GetValue(PressedForegroundProperty); }
 			set { SetValue(PressedForegroundProperty, value); }
-		}
-		public bool IsChecked {
-			get { return (bool)GetValue(IsCheckedProperty); }
-			set { SetValue(IsCheckedProperty, value); }
 		}
 		static GlyphButton() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(GlyphButton), new FrameworkPropertyMetadata(typeof(GlyphButton)));

@@ -1,14 +1,10 @@
-<!-- Stolen from Microsoft.VisualStudio.Shell.ViewManager.dll/Themes/GlyphButtonStyle.baml-->
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+<!-- Stolen from Microsoft.VisualStudio.Shell.ViewManager.dll/Themes/GlyphButtonStyle.baml -->
+<!-- Removed IsChecked property to simplify bindings & stolen types. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:local="clr-namespace:WpfGrowlNotification"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:boc="clr-namespace:Microsoft.VisualStudio.PlatformUI.Shell.Controls;assembly=Microsoft.VisualStudio.Shell.ViewManager,Version=12.0.0.0,Culture=neutral,PublicKeyToken=b03f5f7f11d50a3a">
 	<Style x:Key="{x:Type local:GlyphButton}" TargetType="{x:Type local:GlyphButton}">
-		<Style.Resources>
-			<ResourceDictionary>
-				<boc:BooleanOrConverter x:Key="BooleanOrConverter" />
-			</ResourceDictionary>
-		</Style.Resources>
 		<Setter Property="FrameworkElement.Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" />
 		<Setter Property="TextElement.Foreground" Value="{Binding Path=GlyphForeground, RelativeSource={RelativeSource Self}}" />
 		<Setter Property="Control.Background" Value="#00FFFFFF" />
@@ -28,24 +24,12 @@
 							<Setter TargetName="Border" Value="{Binding HoverBorderThickness, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.BorderThickness" />
 							<Setter Value="{Binding HoverForeground, RelativeSource={RelativeSource Self}}" Property="TextElement.Foreground" />
 						</Trigger>
-						<MultiDataTrigger>
-							<MultiDataTrigger.Conditions>
-								<Condition Value="True">
-									<Condition.Binding>
-										<MultiBinding Converter="{StaticResource BooleanOrConverter}">
-											<Binding Path="IsPressed" RelativeSource="{RelativeSource Self}" />
-											<Binding Path="IsChecked" RelativeSource="{RelativeSource Self}" />
-										</MultiBinding>
-									</Condition.Binding>
-								</Condition>
-							</MultiDataTrigger.Conditions>
-							<MultiDataTrigger.Setters>
-								<Setter TargetName="Border" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.Background" />
-								<Setter TargetName="Border" Value="{Binding PressedBorderBrush, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.BorderBrush" />
-								<Setter TargetName="Border" Value="{Binding PressedBorderThickness, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.BorderThickness" />
-								<Setter Value="{Binding PressedForeground, RelativeSource={RelativeSource Self}}" Property="TextElement.Foreground" />
-							</MultiDataTrigger.Setters>
-						</MultiDataTrigger>
+						<DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource Self}}">
+							<Setter TargetName="Border" Value="{Binding PressedBackground, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.Background" />
+							<Setter TargetName="Border" Value="{Binding PressedBorderBrush, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.BorderBrush" />
+							<Setter TargetName="Border" Value="{Binding PressedBorderThickness, RelativeSource={RelativeSource TemplatedParent}}" Property="Border.BorderThickness" />
+							<Setter Value="{Binding PressedForeground, RelativeSource={RelativeSource Self}}" Property="TextElement.Foreground" />
+						</DataTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
