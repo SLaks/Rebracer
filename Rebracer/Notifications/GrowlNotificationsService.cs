@@ -34,8 +34,11 @@ namespace SLaks.Rebracer.Notifications {
 				return;
 			var dteBounds = dte.MainWindow.ActualBounds();
 
-			Left = dteBounds.Right - ActualWidth - 20;
-			Top = dteBounds.Top + 20;
+			Left = dteBounds.Right - ActualWidth - 30;
+			Top = dteBounds.Top + 30;
+
+			var wih = new WindowInteropHelper(this);
+			wih.Owner = new IntPtr(dte.MainWindow.HWnd);
 		}
 
 		public void ShowNotification(string title, string text) {
