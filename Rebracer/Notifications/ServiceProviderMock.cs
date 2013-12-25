@@ -14,38 +14,6 @@ using Microsoft.Win32;
 using ServiceProviderRegistration = Microsoft.VisualStudio.Shell.ServiceProvider;
 
 namespace SLaks.Rebracer.Notifications {
-	static class AssemblyResolverHack {
-		static bool handled;
-		public static void AddHandler() {
-			if (handled) {
-				Debug.WriteLine("Skipping duplicate handler");
-				return;
-			}
-			Debug.WriteLine("Catching AssemblyResolve!");
-
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-			Assembly.Load("Microsoft.VisualStudio.Shell.10.0");
-			Assembly.Load("Microsoft.VisualStudio.Shell.ViewManager");
-			handled = true;
-		}
-		static readonly Version vsVersion = ServiceProviderMock.FindVsVersions().Last();
-		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-			Debug.WriteLine("Requesting " + args.Name + ",\tfrom " + (args.RequestingAssembly == null ? "(unknown)" : args.RequestingAssembly.FullName));
-
-			// Use latest strong name & version when trying to load SDK assemblies
-			if (!args.Name.StartsWith("Microsoft.VisualStudio", StringComparison.OrdinalIgnoreCase))
-				return null;
-
-			var name = new AssemblyName(args.Name.Replace("10", vsVersion.Major.ToString(CultureInfo.InvariantCulture)));
-			name.Version = vsVersion;
-
-			name.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=b03f5f7f11d50a3a").GetPublicKeyToken());
-			name.CultureInfo = CultureInfo.InvariantCulture;
-
-			return Assembly.Load(name);
-		}
-	}
-
 	class ServiceProviderMock : Microsoft.VisualStudio.OLE.Interop.IServiceProvider {
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "These objects become global and must not be disposed yet")]
 		public static void Initialize() {
@@ -64,8 +32,8 @@ namespace SLaks.Rebracer.Notifications {
 
 			ServiceProviderRegistration.CreateFromSetSite(sp);
 			// The designer loads Microsoft.VisualStudio.Shell.12.0,
-			// which we cannot reference directly to avoid  breaking
-			// older versions.  Therefore, I set its global property
+			// which we cannot reference directly (to avoid breaking
+			// older versions). Therefore, I set its global property
 			// using Reflection instead.
 			Type.GetType("Microsoft.VisualStudio.Shell.ServiceProvider, Microsoft.VisualStudio.Shell.12.0")
 				.GetMethod("CreateFromSetSite", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static)
