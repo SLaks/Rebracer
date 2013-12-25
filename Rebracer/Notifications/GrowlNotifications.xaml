@@ -29,25 +29,25 @@
 					<Image Grid.RowSpan="2" Source="{Binding Path=ImageUrl}" Margin="0,0,16,0" Width="60"></Image>
 					<TextBlock Grid.Column="1" Text="{Binding Path=Title}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"  Margin="2,4,4,2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
-					<Model:TitleButton x:Name="CloseButton" Grid.Column="2" 
-											  HorizontalAlignment="Right" VerticalAlignment="Top" 
-											  Padding="9,10" Margin="8,-12,-12,0"
-											  BorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
-											  BorderThickness="1,0,0,1"
-											  GlyphForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
-											  HoverBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBrushKey}}" 
-											  HoverBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBorderBrushKey}}"
-											  HoverForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveGlyphBrushKey}}" 
-											  HoverBorderThickness="1,0,0,1"
-											  PressedBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBrushKey}}" 
-											  PressedBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBorderBrushKey}}" 
-											  PressedForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownActiveGlyphBrushKey}}" 
-											  PressedBorderThickness="1,0,0,1" 
-											  AutomationProperties.Name="Close" AutomationProperties.AutomationId="Close" 
-											  ToolTip="Close">
+					<Model:GlyphButton x:Name="CloseButton" Grid.Column="2" 
+									   HorizontalAlignment="Right" VerticalAlignment="Top" 
+									   Padding="9,10" Margin="8,-12,-12,0"
+									   BorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.MainWindowButtonActiveBorderBrushKey}}" 
+									   BorderThickness="1,0,0,1"
+									   GlyphForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonInactiveGlyphBrushKey}}" 
+									   HoverBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBrushKey}}" 
+									   HoverBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveBorderBrushKey}}"
+									   HoverForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonHoverActiveGlyphBrushKey}}" 
+									   HoverBorderThickness="1,0,0,1"
+									   PressedBackground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBrushKey}}" 
+									   PressedBorderBrush="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownBorderBrushKey}}" 
+									   PressedForeground="{DynamicResource {x:Static Model:EnvironmentColors.ToolWindowButtonDownActiveGlyphBrushKey}}" 
+									   PressedBorderThickness="1,0,0,1" 
+									   AutomationProperties.Name="Close" AutomationProperties.AutomationId="Close" 
+									   ToolTip="Close">
 						<Path Name="HideButtonPath" x:Uid="HideButtonPath" Stretch="Uniform" Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" 
 								  Fill="{Binding Path=(TextElement.Foreground), RelativeSource={RelativeSource Self}}" />
-					</Model:TitleButton>
+					</Model:GlyphButton>
 
 					<TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Message}"  TextOptions.TextRenderingMode="ClearType" TextOptions.TextFormattingMode="Display" Foreground="{DynamicResource {x:Static Model:EnvironmentColors.ComboBoxMouseOverTextBrushKey}}" 
 								   FontFamily="Arial" VerticalAlignment="Top"  Margin="2,2,4,4" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
