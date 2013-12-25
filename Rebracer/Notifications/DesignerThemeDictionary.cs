@@ -8,49 +8,7 @@ using Microsoft.Internal.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 
 namespace SLaks.Rebracer.Notifications {
-	// Copied from similar class in Microsoft.VisualStudio.PlatformUI,
-	// in Microsoft.VisualStudio.Shell.11.0 & higher.  This way, we do
-	// not reference any VS11+ DLLs, avoiding all conflicts.
-	// The ThemeResourceKey class is OK to reference; it is defined in
-	// Microsoft.VisualStudio.Shell.Immutable.11.0, which doesn't have
-	// conflicting references.  We will probably need to ship that DLL
-	// for pure VS2010 support.
-	// TODO: Inherit this class & pick entries in VsColors for VS2010.
-	public abstract class DeferredResourceDictionaryBase : ResourceDictionary {
-		protected override void OnGettingValue(object key, ref object value, out bool canCache) {
-			ThemeResourceKey themeResourceKey = value as ThemeResourceKey;
-			if (themeResourceKey == null) {
-				base.OnGettingValue(key, ref value, out canCache);
-				return;
-			}
-			if (key is ThemeResourceKey) {
-				value = this.RealizeValue(themeResourceKey);
-				canCache = true;
-				return;
-			}
-			value = base[themeResourceKey];
-			canCache = true;
-		}
-		protected abstract uint GetRgbaColorValue(ThemeResourceKey key);
-		private object RealizeValue(ThemeResourceKey key) {
-			Color color = ToColorFromRgba(this.GetRgbaColorValue(key));
-			if (IsBrushKeyType(key.KeyType)) {
-				var brush = new SolidColorBrush(color);
-				brush.Freeze();
-				return brush;
-			}
-			return color;
-		}
-		private static bool IsBrushKeyType(ThemeResourceKeyType keyType) {
-			return keyType == ThemeResourceKeyType.BackgroundBrush || keyType == ThemeResourceKeyType.ForegroundBrush;
-		}
-
-		static Color ToColorFromRgba(uint colorValue) {
-			return Color.FromArgb((byte)(colorValue >> 24), (byte)colorValue, (byte)(colorValue >> 8), (byte)(colorValue >> 16));
-		}
-	}
-
-	public class DesignerThemeDictionary : DeferredResourceDictionaryBase {
+	public class DesignerThemeDictionary : ResourceDictionary {
 
 		// We must access everything from these classes using dynamic due to NoPIA conflicts.
 		// The compiler gives some errors since we do not have the right PIA, and the runtime
@@ -71,7 +29,15 @@ namespace SLaks.Rebracer.Notifications {
 			set { themeIndex = value; LoadTheme(value); }
 		}
 
-		// Based on Microsoft.VisualStudio.Platform.WindowManagement.ResourceSynchronizer.AddSolidColorKeys()
+		static Color ToColorFromRgba(uint colorValue) {
+			return Color.FromArgb((byte)(colorValue >> 24), (byte)colorValue, (byte)(colorValue >> 8), (byte)(colorValue >> 16));
+		}
+		static SolidColorBrush GetBrush(Color color) {
+			var brush = new SolidColorBrush(color);
+			brush.Freeze();
+			return brush;
+		}
+		// Loosely based on Microsoft.VisualStudio.Platform.WindowManagement.ResourceSynchronizer.AddSolidColorKeys()
 		public void LoadTheme(int index) {
 			if (service == null)
 				return;
@@ -79,26 +45,18 @@ namespace SLaks.Rebracer.Notifications {
 
 			currentTheme = service.Themes[index % service.Themes.Count];
 			foreach (ColorName colorName in service.ColorNames) {
-				IVsColorEntry vsColorEntry = currentTheme[colorName];
-				if (vsColorEntry != null) {
-					if (vsColorEntry.BackgroundType != 0) {
-						ThemeResourceKey brushKey = new ThemeResourceKey(vsColorEntry.ColorName.Category, vsColorEntry.ColorName.Name, ThemeResourceKeyType.BackgroundBrush);
-						ThemeResourceKey colorKey = new ThemeResourceKey(vsColorEntry.ColorName.Category, vsColorEntry.ColorName.Name, ThemeResourceKeyType.BackgroundColor);
-						Add(brushKey, brushKey);
-						Add(colorKey, colorKey);
-						int num = VsColorFromName(colorName);
-						if (num != 0) {
-							Add(VsColors.GetColorKey(num), colorKey);
-							Add(VsBrushes.GetBrushKey(num), brushKey);
-						}
-					}
-					if (vsColorEntry.ForegroundType != 0) {
-						ThemeResourceKey brushKey = new ThemeResourceKey(vsColorEntry.ColorName.Category, vsColorEntry.ColorName.Name, ThemeResourceKeyType.ForegroundBrush);
-						ThemeResourceKey colorKey = new ThemeResourceKey(vsColorEntry.ColorName.Category, vsColorEntry.ColorName.Name, ThemeResourceKeyType.ForegroundColor);
-						Add(brushKey, brushKey);
-						Add(colorKey, colorKey);
-					}
-				}
+				IVsColorEntry entry = currentTheme[colorName];
+				if (entry == null || entry.BackgroundType == 0)
+					continue;
+
+				int colorId = VsColorFromName(colorName);
+				if (colorId == 0)
+					continue;
+
+				var color = ToColorFromRgba(entry.Background);
+
+				Add(VsColors.GetColorKey(colorId), color);
+				Add(VsBrushes.GetBrushKey(colorId), GetBrush(color));
 			}
 		}
 
@@ -111,20 +69,6 @@ namespace SLaks.Rebracer.Notifications {
 					return VsColors.GetColorID("VsColor." + colorName.Name);
 			} catch (ArgumentOutOfRangeException) { }
 			return 0;
-		}
-
-		protected override uint GetRgbaColorValue(ThemeResourceKey key) {
-			var entry = currentTheme[new ColorName { Category = key.Category, Name = key.Name }];
-			switch (key.KeyType) {
-				case ThemeResourceKeyType.ForegroundColor:
-				case ThemeResourceKeyType.ForegroundBrush:
-					return entry.Foreground;
-				case ThemeResourceKeyType.BackgroundColor:
-				case ThemeResourceKeyType.BackgroundBrush:
-					return entry.Background;
-				default:
-					throw new InvalidEnumArgumentException("key", (int)key.KeyType, typeof(ThemeResourceKeyType));
-			}
 		}
 	}
 }
