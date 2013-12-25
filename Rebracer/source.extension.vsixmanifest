@@ -1,23 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-	<Metadata>
-		<Identity Id="bfc869c4-ae0f-467a-86a4-5d9401303490" Version="1.0" Language="en-US" Publisher="SLaks" />
-		<DisplayName>Rebracer</DisplayName>
+<?xml version="1.0" encoding="utf-8"?>
+<Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+	<Identifier Id="bfc869c4-ae0f-467a-86a4-5d9401303490">
+		<Name>Rebracer</Name>
+		<Author>SLaks</Author>
+		<Version>1.0</Version>
 		<Description xml:space="preserve">Saves editor formatting settings as part of each solution.</Description>
-		<MoreInfo>https://github.com/SLaks/Rebracer</MoreInfo>
-		<GettingStartedGuide>https://github.com/SLaks/Rebracer</GettingStartedGuide>
 		<Icon>Resources\Package.ico</Icon>
+		<MoreInfoUrl>https://github.com/SLaks/Rebracer</MoreInfoUrl>
 		<PreviewImage>Resources\Rebracer-200.png</PreviewImage>
-		<Tags>settings, solution, source formatting</Tags>
-	</Metadata>
-	<Installation InstalledByMsi="false">
-		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0, 16.0]" />
-	</Installation>
-	<Dependencies>
-		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-	</Dependencies>
-	<Assets>
-		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-	</Assets>
-</PackageManifest>
+		<Locale>1033</Locale>
+		<SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="6.0"/>
+		<SupportedProducts>
+			<VisualStudio Version="10.0">
+				<Edition>Pro</Edition>
+			</VisualStudio>
+			<VisualStudio Version="11.0">
+				<Edition>Pro</Edition>
+			</VisualStudio>
+			<VisualStudio Version="12.0">
+				<Edition>Pro</Edition>
+			</VisualStudio>
+			<VisualStudio Version="14.0">
+				<Edition>Pro</Edition>
+			</VisualStudio>
+		</SupportedProducts>
+	</Identifier>
+	<Content>
+		<MefComponent>|%CurrentProject%|</MefComponent>
+		<VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
+	</Content>
+</Vsix>
