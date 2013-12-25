@@ -68,17 +68,17 @@ namespace WpfGrowlNotification {
 	// This is a version-dependent assembly, so I can't use
 	// it at all.
 	//http://twitter.com/jaredpar/status/415661754979717120
-	public class GlyphButton : Button {
+	public class TitleBarButton : Button {
 		// Removed unused IsChecked property.
-		public static readonly DependencyProperty PressedBackgroundProperty = DependencyProperty.Register("PressedBackground", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty PressedBorderBrushProperty = DependencyProperty.Register("PressedBorderBrush", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty PressedBorderThicknessProperty = DependencyProperty.Register("PressedBorderThickness", typeof(Thickness), typeof(GlyphButton));
-		public static readonly DependencyProperty HoverBackgroundProperty = DependencyProperty.Register("HoverBackground", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty HoverBorderBrushProperty = DependencyProperty.Register("HoverBorderBrush", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty HoverBorderThicknessProperty = DependencyProperty.Register("HoverBorderThickness", typeof(Thickness), typeof(GlyphButton));
-		public static readonly DependencyProperty GlyphForegroundProperty = DependencyProperty.Register("GlyphForeground", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty HoverForegroundProperty = DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(GlyphButton));
-		public static readonly DependencyProperty PressedForegroundProperty = DependencyProperty.Register("PressedForeground", typeof(Brush), typeof(GlyphButton));
+		public static readonly DependencyProperty PressedBackgroundProperty = DependencyProperty.Register("PressedBackground", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty PressedBorderBrushProperty = DependencyProperty.Register("PressedBorderBrush", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty PressedBorderThicknessProperty = DependencyProperty.Register("PressedBorderThickness", typeof(Thickness), typeof(TitleBarButton));
+		public static readonly DependencyProperty HoverBackgroundProperty = DependencyProperty.Register("HoverBackground", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty HoverBorderBrushProperty = DependencyProperty.Register("HoverBorderBrush", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty HoverBorderThicknessProperty = DependencyProperty.Register("HoverBorderThickness", typeof(Thickness), typeof(TitleBarButton));
+		public static readonly DependencyProperty GlyphForegroundProperty = DependencyProperty.Register("GlyphForeground", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty HoverForegroundProperty = DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(TitleBarButton));
+		public static readonly DependencyProperty PressedForegroundProperty = DependencyProperty.Register("PressedForeground", typeof(Brush), typeof(TitleBarButton));
 
 		public Brush PressedBackground {
 			get { return (Brush)GetValue(PressedBackgroundProperty); }
@@ -118,10 +118,12 @@ namespace WpfGrowlNotification {
 		}
 
 		[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
-		static GlyphButton() {
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(GlyphButton), new FrameworkPropertyMetadata(typeof(GlyphButton)));
+		static TitleBarButton() {
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(TitleBarButton), new FrameworkPropertyMetadata(typeof(TitleBarButton)));
 		}
 	}
+
+
 	// Stolen from Microsoft.VisualStudio.PlatformUI.EnvironmentColors
 	// in Microsoft.VisualStudio.Shell.11.0 & higher.  This way, we do
 	// not reference any VS11+ DLLs, avoiding all conflicts.
