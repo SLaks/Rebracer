@@ -45,7 +45,8 @@ namespace SLaks.Rebracer.Services {
 			projectEvents = ((Events2)dte.Events).ProjectItemsEvents;
 		}
 		public void Activate() {
-			dteEvents.OnStartupComplete += DTEEvents_OnStartupComplete;
+			InitializeSettingsFile();
+
 			solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
 			solutionEvents.Opened += SolutionEvents_Opened;
 
@@ -67,28 +68,9 @@ namespace SLaks.Rebracer.Services {
 			commandsEvents.Add(h);
 		}
 
-		#region Events to read settings
-		private void SolutionEvents_Opened() {
-			// When the user opens a solution, activate its
-			// settings file, if any.
-			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
-		}
-
-		private async void SolutionEvents_AfterClosing() {
-			// If the user closed a solution, switch back
-			// to the global (or new solution's) settings
-			// Wait a bit to avoid double-loading in case
-			// the user opened a new solution, as opposed
-			// to closing this one only.
-			await Task.Delay(750);
-			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
-		}
-
-		private void DTEEvents_OnStartupComplete() {
+		private void InitializeSettingsFile() {
 			// On first launch, populate the global settings file
-			// before loading any solution settings. This must be
-			// done after the MainWindow is shown, or showing the
-			// notification will look weird.
+			// before loading any solution settings.
 			if (!File.Exists(locator.UserSettingsFile)) {
 				logger.Log("Creating user settings file to store current global settings");
 				persister.CreateSettingsFile(locator.UserSettingsFile,
@@ -106,6 +88,24 @@ namespace SLaks.Rebracer.Services {
 			// activate the solution or global file.
 			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
 		}
+
+		#region Events to read settings
+		private void SolutionEvents_Opened() {
+			// When the user opens a solution, activate its
+			// settings file, if any.
+			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
+		}
+
+		private async void SolutionEvents_AfterClosing() {
+			// If the user closed a solution, switch back
+			// to the global (or new solution's) settings
+			// Wait a bit to avoid double-loading in case
+			// the user opened a new solution, as opposed
+			// to closing this one only.
+			await Task.Delay(750);
+			persister.ActivateSettingsFile(locator.GetActiveFile(dte.Solution));
+		}
+
 
 		private void ProjectEvents_ItemAdded(ProjectItem ProjectItem) {
 			// If the user added a different file, or if there

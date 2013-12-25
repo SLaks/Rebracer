@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Task = System.Threading.Tasks.Task;
 
 namespace SLaks.Rebracer {
 	/// <summary>
@@ -32,7 +34,7 @@ namespace SLaks.Rebracer {
 	// This attribute is needed to let the shell know that this package exposes some menus.
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[Guid(GuidList.guidRebracerPkgString)]
-	public sealed class RebracerPackage : Package {
+	public sealed class RebracerPackage : Package, IVsShellPropertyEvents {
 		/// <summary>
 		/// Default constructor of the package.
 		/// Inside this method you can place any initialization code that does not require 
@@ -44,15 +46,43 @@ namespace SLaks.Rebracer {
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 		}
 
+		uint shellPropertyCookie;
+		IVsShell shellService;
 
 		/// <summary>
 		/// Initializes the package.  This method is called right after the package is sited, so this is the place
 		/// where you can put all the initialization code that rely on services provided by VisualStudio.
 		/// </summary>
-		protected override void Initialize() {
-			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+		protected override async void Initialize() {
 			base.Initialize();
 
+			shellService = GetService(typeof(SVsShell)) as IVsShell;
+
+			if (shellService != null) {
+				ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out shellPropertyCookie));
+			} else {
+				await Task.Delay(TimeSpan.FromSeconds(5));
+				FullInitialize();
+			}
+		}
+
+		// Wait for VS to fully load
+		// http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
+		public int OnShellPropertyChange([ComAliasName("Microsoft.VisualStudio.Shell.Interop.VSSPROPID")]int propid, object var) {
+			var property = (__VSSPROPID)propid;
+			if (property != __VSSPROPID.VSSPROPID_Zombie)
+				return 0;
+
+			// If we're still zombied, wait for the next event.
+			if ((bool)var)
+				return 0;
+			ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(shellPropertyCookie));
+			FullInitialize();
+
+			return 0;
+		}
+
+		private void FullInitialize() {
 			var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
 			foreach (var service in componentModel.GetExtensions<Services.IAutoActivatingService>())
