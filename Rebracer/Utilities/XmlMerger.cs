@@ -36,9 +36,14 @@ namespace SLaks.Rebracer.Utilities {
 				while (newIndex < newItems.Count && StringComparer.Ordinal.Compare(newItems[newIndex].Key, thisKey) < 0) {
 					changed = true;
 					XElement newNode = newItems[newIndex].Value;
-					o.AddBeforeSelf(newNode);
-					// Insert the requisite whitespace between the two nodes
-					newNode.AddAfterSelf(newNode.GetPrecedingWhitespace());
+
+					// Insert the new element before any comments or
+					// whitespace that precede this element, and add
+					// the requisite separator whitespace before it.
+					var precedingTrivia = o.GetPrecedingTrivia().FirstOrDefault();
+
+					(precedingTrivia ?? o).AddBeforeSelf(newNode);
+					newNode.AddBeforeSelf(newNode.GetPrecedingWhitespace());
 					newIndex++;
 				}
 
@@ -51,14 +56,14 @@ namespace SLaks.Rebracer.Utilities {
 				}
 
 				// If the container is not already sorted, sort it,
-				// then try again.  Preserve any whitespace between
-				// elements, as well as any trailing whitespace for
-				// the parent's closing tag.
+				// then try again. Preserve whitespace and comments
+				// between existing elements, as well as before the
+				// parent's closing tag.
 				if (StringComparer.Ordinal.Compare(thisKey, lastKey) < 0) {
 					container.ReplaceNodes(
 						oldItems.OrderBy(nameSelector)
-								.SelectMany(elem => new XNode[] { elem.PreviousNode as XText, elem }),
-						container.LastNode as XText
+								.SelectMany(elem => new object[] { elem.GetPrecedingTrivia(), elem }),
+						container.Elements().Last().NodesAfterSelf()
 					);
 					MergeElements(container, newElements, nameSelector);
 					// Because we sorted the existing elements, we certainly changed something
@@ -71,15 +76,28 @@ namespace SLaks.Rebracer.Utilities {
 				changed = true;
 
 			// Add any new items that go after the last item.
-			// Add these nodes before any trailing whitespace
-			var inserter = container.LastNode is XText
-				? container.LastNode.AddBeforeSelf : new NodeInserter(container.Add);
+			// Add these nodes immediately following the last
+			// element, before trailing whitespace & comments
+			var lastElement = container.Elements().LastOrDefault();
+			// Use AddBeforeSelf() to preserve ordering.
+			var inserter = lastElement != null && lastElement.NextNode != null
+				? lastElement.NextNode.AddBeforeSelf : new NodeInserter(container.Add);
 
-			var separatingWhitespace = container.Elements().LastOrDefault().GetPrecedingWhitespace();
+			var separatingWhitespace = lastElement.GetPrecedingWhitespace();
 			for (; newIndex < newItems.Count; newIndex++)
 				inserter(separatingWhitespace, newItems[newIndex].Value);
 			return changed;
 		}
+
+		///<summary>Gets all whitespace and comment nodes before the specified element, until its preceding element.</summary>
+		static IEnumerable<XNode> GetPrecedingTrivia(this XElement element) {
+			var lastElem = element.ElementsBeforeSelf().LastOrDefault();
+			if (lastElem == null)	// If it's the first element, take all preceding nodes
+				return element.NodesBeforeSelf();
+			else					// Otherwise, take all nodes after the prior element.
+				return lastElem.NodesAfterSelf().TakeWhile(n => n != element);
+		}
+
 		///<summary>A method to insert nodes into a LINQ to XML document.</summary>
 		delegate void NodeInserter(params object[] content);
 		private static XNode GetPrecedingWhitespace(this XElement element) {

@@ -244,6 +244,31 @@ namespace Rebracer.Tests.UtilitiesTets {
 		<e />
 </C>");
 		}
+
+		[TestMethod]
+		public void ReorderingElementsPreservesComments() {
+			// Note two tabs before each element
+			var source = @"<C>
+		<!-- Comment on D -->
+		<d />
+		<!-- Comment on B -->
+		<b />
+		<!-- Comment on end -->
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+			var newSource = MergeElements(container, new XElement("a"), new XElement("c"), new XElement("e"), new XElement("f"));
+			container.ToString().Should().Be(@"<C>
+		<a />
+		<!-- Comment on B -->
+		<b />
+		<c />
+		<!-- Comment on D -->
+		<d />
+		<e />
+		<f />
+		<!-- Comment on end -->
+</C>");
+		}
 		[TestMethod]
 		public void ReplacedElementsPreserveWhitespace() {
 			// Note two tabs before each element
