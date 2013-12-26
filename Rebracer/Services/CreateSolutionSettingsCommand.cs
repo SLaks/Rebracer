@@ -42,7 +42,9 @@ namespace SLaks.Rebracer.Services {
 				"Rebracer Solution Settings File",
 				"This file contains Visual Studio settings for " + Path.GetFileName(dte.Solution.FileName) + ".",
 				"Rebracer uses this file to apply settings for this solution",
-				"when the solution is opened."
+				"when the solution is opened.",
+				"Install Rebracer from http://visualstudiogallery.msdn.microsoft.com/410e9b9f-65f3-4495-b68e-15567e543c58 ",
+				"See https://github.com/SLaks/Rebracer for more information"
 			);
 			dte.Solution.GetSolutionItems().ProjectItems.AddFromFile(persister.SettingsPath);
 		}
