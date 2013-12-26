@@ -30,7 +30,10 @@ namespace SLaks.Rebracer.Utilities {
 			// Cannot read: Exception occurred. (Exception from HRESULT: 0x80020009 (DISP_E_EXCEPTION))
 			{ new SettingsSection("TextEditor", "C/C++ Specific"), new [] { "IntellisenseOptions" } },
 			// Cannot write: Member not found. (Exception from HRESULT: 0x80020003 (DISP_E_MEMBERNOTFOUND))
-			{ new SettingsSection("TextEditor", "JavaScript Specific"), new [] { "ImplicitReferences" } }
+			{ new SettingsSection("TextEditor", "JavaScript Specific"), new [] { "ImplicitReferences" } },
+
+			// Typo'd setting in some VS builds; ignoring to not give warnings for most people.
+			{ new SettingsSection("TextEditor", "CSharp-Specific"), new []{ "NewLineQueryExpression_EachClause" } }
 		};
 		///<summary>Checks whether a specific property should be skipped to to persistence issues.</summary>
 		public static bool ShouldSkip(SettingsSection section, string property) {
