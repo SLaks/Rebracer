@@ -193,6 +193,73 @@ namespace Rebracer.Tests.UtilitiesTets {
 			));
 		}
 
+		[TestMethod]
+		public void NewElementsGetNewLines() {
+			// Note two tabs before each element
+			var source = @"<C>
+		<b />
+		<d />
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+			MergeElements(container,new XElement("c"));
+			container.ToString().Should().Be(@"<C>
+		<b />
+		<c />
+		<d />
+</C>", "new element in middle should have correct whitespace");
+
+			MergeElements(container, new XElement("a"));
+			container.ToString().Should().Be(@"<C>
+		<a />
+		<b />
+		<c />
+		<d />
+</C>", "new element at beginning should have correct whitespace");
+
+			MergeElements(container, new XElement("e"), new XElement("f"));
+			container.ToString().Should().Be(@"<C>
+		<a />
+		<b />
+		<c />
+		<d />
+		<e />
+		<f />
+</C>", "new elements at end should have correct whitespace");
+		}
+
+		[TestMethod]
+		public void ReorderingNewElementsGetNewLines() {
+			// Note two tabs before each element
+			var source = @"<C>
+		<d />
+		<b />
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+			var newSource = MergeElements(container, new XElement("a"), new XElement("c"), new XElement("e"));
+			container.ToString().Should().Be(@"<C>
+		<a />
+		<b />
+		<c />
+		<d />
+		<e />
+</C>");
+		}
+		[TestMethod]
+		public void ReplacedElementsPreserveWhitespace() {
+			// Note two tabs before each element
+			var source = @"<C>
+		<a />
+		<c />
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+			var newSource = MergeElements(container,
+				new XElement("c", "Hi!")
+			);
+			container.ToString().Should().Be(@"<C>
+		<a />
+		<c>Hi!</c>
+</C>");
+		}
 	}
 	// Stolen from https://github.com/dennisdoomen/fluentassertions/pull/35
 	// TODO: Delete these classes after that is released.
@@ -259,6 +326,8 @@ namespace Rebracer.Tests.UtilitiesTets {
 
 			return new AndConstraint<XElementAssertions>(@this);
 		}
+
+
 	}
 	static class XDocAssertionExtensions {
 		/// <summary>

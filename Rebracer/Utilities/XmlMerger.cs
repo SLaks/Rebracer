@@ -35,7 +35,10 @@ namespace SLaks.Rebracer.Utilities {
 				// Insert any new items that should come before this element
 				while (newIndex < newItems.Count && StringComparer.Ordinal.Compare(newItems[newIndex].Key, thisKey) < 0) {
 					changed = true;
-					o.AddBeforeSelf(newItems[newIndex].Value);
+					XElement newNode = newItems[newIndex].Value;
+					o.AddBeforeSelf(newNode);
+					// Insert the requisite whitespace between the two nodes
+					newNode.AddAfterSelf(newNode.GetPrecedingWhitespace());
 					newIndex++;
 				}
 
@@ -48,9 +51,15 @@ namespace SLaks.Rebracer.Utilities {
 				}
 
 				// If the container is not already sorted, sort it,
-				// then try again.
+				// then try again.  Preserve any whitespace between
+				// elements, as well as any trailing whitespace for
+				// the parent's closing tag.
 				if (StringComparer.Ordinal.Compare(thisKey, lastKey) < 0) {
-					container.ReplaceNodes(oldItems.OrderBy(nameSelector));
+					container.ReplaceNodes(
+						oldItems.OrderBy(nameSelector)
+								.SelectMany(elem => new XNode[] { elem.PreviousNode as XText, elem }),
+						container.LastNode as XText
+					);
 					MergeElements(container, newElements, nameSelector);
 					// Because we sorted the existing elements, we certainly changed something
 					return true;
@@ -60,10 +69,29 @@ namespace SLaks.Rebracer.Utilities {
 			}
 			if (newIndex < newItems.Count)
 				changed = true;
+
 			// Add any new items that go after the last item.
+			// Add these nodes before any trailing whitespace
+			var inserter = container.LastNode is XText
+				? container.LastNode.AddBeforeSelf : new NodeInserter(container.Add);
+
+			var separatingWhitespace = container.Elements().LastOrDefault().GetPrecedingWhitespace();
 			for (; newIndex < newItems.Count; newIndex++)
-				container.Add(newItems[newIndex].Value);
+				inserter(separatingWhitespace, newItems[newIndex].Value);
 			return changed;
+		}
+		///<summary>A method to insert nodes into a LINQ to XML document.</summary>
+		delegate void NodeInserter(params object[] content);
+		private static XNode GetPrecedingWhitespace(this XElement element) {
+			// If we started from an empty parent, there is no known whitespace
+			if (element == null)
+				return null;
+			var sample = element.PreviousNode as XText
+					  ?? element.NextNode as XText;
+			// If there is no whitespace before or after the node, give up.
+			if (sample == null)
+				return null;
+			return new XText(sample);
 		}
 	}
 }
