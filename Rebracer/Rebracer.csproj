@@ -191,6 +191,9 @@
     <Content Include="Resources\Package.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Screenshot.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\Rebracer-100.png" />
     <Content Include="Resources\Rebracer-200.png">
       <IncludeInVSIX>true</IncludeInVSIX>

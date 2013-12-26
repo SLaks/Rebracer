@@ -3,11 +3,12 @@
 	<Identifier Id="bfc869c4-ae0f-467a-86a4-5d9401303490">
 		<Name>Rebracer</Name>
 		<Author>SLaks</Author>
-		<Version>1.0</Version>
+		<Version>1.0.1</Version>
 		<Description xml:space="preserve">Saves editor formatting settings as part of each solution.</Description>
 		<Icon>Resources\Package.ico</Icon>
 		<MoreInfoUrl>https://github.com/SLaks/Rebracer</MoreInfoUrl>
-		<PreviewImage>Resources\Rebracer-200.png</PreviewImage>
+		<ReleaseNotes>https://github.com/SLaks/Rebracer/releases</ReleaseNotes>
+		<PreviewImage>Resources\Screenshot.png</PreviewImage>
 		<Locale>1033</Locale>
 		<SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="6.0"/>
 		<SupportedProducts>
