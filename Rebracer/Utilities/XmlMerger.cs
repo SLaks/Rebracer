@@ -52,6 +52,7 @@ namespace SLaks.Rebracer.Utilities {
 					if (!changed && !XNode.DeepEquals(o, newItems[newIndex].Value))
 						changed = true;
 					o.ReplaceWith(newItems[newIndex].Value);
+					IndentChildren(newItems[newIndex].Value);
 					newIndex++;
 				}
 
@@ -92,15 +93,16 @@ namespace SLaks.Rebracer.Utilities {
 		///<summary>Gets all whitespace and comment nodes before the specified element, until its preceding element.</summary>
 		static IEnumerable<XNode> GetPrecedingTrivia(this XElement element) {
 			var lastElem = element.ElementsBeforeSelf().LastOrDefault();
-			if (lastElem == null)	// If it's the first element, take all preceding nodes
+			if (lastElem == null)   // If it's the first element, take all preceding nodes
 				return element.NodesBeforeSelf();
-			else					// Otherwise, take all nodes after the prior element.
+			else                    // Otherwise, take all nodes after the prior element.
 				return lastElem.NodesAfterSelf().TakeWhile(n => n != element);
 		}
 
 		///<summary>A method to insert nodes into a LINQ to XML document.</summary>
 		delegate void NodeInserter(params object[] content);
-		private static XNode GetPrecedingWhitespace(this XElement element) {
+		///<summary>Gets the XText node containing the whitespace used to indent this element.  If there is no preceding whitespace, the following whitespace will be returned, if any.</summary>
+		private static XText GetPrecedingWhitespace(this XElement element) {
 			// If we started from an empty parent, there is no known whitespace
 			if (element == null)
 				return null;
@@ -110,6 +112,49 @@ namespace SLaks.Rebracer.Utilities {
 			if (sample == null)
 				return null;
 			return new XText(sample);
+		}
+
+		///<summary>Indents the children of an inserted element, based on the indentation of the parent element.</summary>
+		public static void IndentChildren(this XElement parent) {
+			var parentPrefix = parent.GetPrecedingWhitespace();
+			if (parentPrefix == null)   // No known indent to start from
+				return;
+
+			// Copy the child list before we start mutating.
+			// Looking at XContainer source code, this isn't
+			// strictly necessary.
+			var childElements = parent.Elements().ToList();
+			if (childElements.Count == 0)
+				return;
+			parent.Add(parentPrefix);   // Indent the closing tag.
+
+			var childPrefix = GetChildPrefix(parent.Depth(), parentPrefix.Value);
+			if (string.IsNullOrEmpty(childPrefix))
+				return;
+
+			foreach (var child in childElements) {
+				child.AddBeforeSelf(childPrefix);
+				IndentChildren(child);
+			}
+		}
+
+		public static int Depth(this XElement element) {
+			if (element.Parent == null)
+				return 0;
+			return element.Parent.Depth() + 1;
+		}
+
+		private static string GetChildPrefix(int parentDepth, string parentPrefix) {
+			string newLine = parentPrefix.Substring(0, parentPrefix.TakeWhile(c => c == '\r' || c == '\n').Count());
+			parentPrefix = parentPrefix.Substring(newLine.Length);
+
+			string levelIndent;
+			if (parentDepth == 0)
+				return newLine; // Don't know how to indent
+			else
+				levelIndent = parentPrefix.Substring(0, parentPrefix.Length / parentDepth);
+
+			return newLine + string.Concat(Enumerable.Repeat(levelIndent, parentDepth + 1));
 		}
 	}
 }

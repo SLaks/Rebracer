@@ -246,6 +246,36 @@ namespace Rebracer.Tests.UtilitiesTets {
 		}
 
 		[TestMethod]
+		public void ReplacedChildElementsPreserveIndentation() {
+			// Note two tabs before each element
+			var source = @"<C>
+		<a b=""c"">
+				<x1>Hi!</x1>
+				<x2>
+						<content>Bye!</content>
+				</x2>
+		</a>
+		<d />
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+			var newSource = MergeElements(container, 
+				new XElement("a", new XAttribute("b", "c"),
+					new XElement("x1", "Hi!"),
+					new XElement("x2", new XElement("NewContent", "Bye!"))
+				)
+			);
+			container.ToString().Should().Be(@"<C>
+		<a b=""c"">
+				<x1>Hi!</x1>
+				<x2>
+						<NewContent>Bye!</NewContent>
+				</x2>
+		</a>
+		<d />
+</C>");
+		}
+
+		[TestMethod]
 		public void ReorderingElementsPreservesComments() {
 			// Note two tabs before each element
 			var source = @"<C>
