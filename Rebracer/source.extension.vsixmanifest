@@ -7,7 +7,6 @@
 		<Description xml:space="preserve">Saves editor formatting settings as part of each solution.</Description>
 		<Icon>Resources\Package.ico</Icon>
 		<MoreInfoUrl>https://github.com/SLaks/Rebracer</MoreInfoUrl>
-		<ReleaseNotes>https://github.com/SLaks/Rebracer/releases</ReleaseNotes>
 		<PreviewImage>Resources\Screenshot.png</PreviewImage>
 		<Locale>1033</Locale>
 		<SupportedFrameworkRuntimeEdition MinVersion="4.5" MaxVersion="6.0"/>
