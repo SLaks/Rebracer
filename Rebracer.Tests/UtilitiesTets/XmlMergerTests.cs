@@ -194,6 +194,23 @@ namespace Rebracer.Tests.UtilitiesTets {
 		}
 
 		[TestMethod]
+		public void IdenticalNestedReplacementWithWhitespaceIsNotChange() {
+			var source = @"<C>
+		<b>
+				<c />
+		</b>
+		<d />
+</C>";
+			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
+
+			MergeElements(container,
+				new XElement("b", new XElement("c")),
+				new XElement("d")
+			).Should().BeFalse();
+			container.ToString().Should().Be(source);
+		}
+
+		[TestMethod]
 		public void NewElementsGetNewLines() {
 			// Note two tabs before each element
 			var source = @"<C>
@@ -201,7 +218,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 		<d />
 </C>";
 			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
-			MergeElements(container,new XElement("c"));
+			MergeElements(container, new XElement("c"));
 			container.ToString().Should().Be(@"<C>
 		<b />
 		<c />
@@ -258,7 +275,7 @@ namespace Rebracer.Tests.UtilitiesTets {
 		<d />
 </C>";
 			var container = XElement.Parse(source, LoadOptions.PreserveWhitespace);
-			var newSource = MergeElements(container, 
+			var newSource = MergeElements(container,
 				new XElement("a", new XAttribute("b", "c"),
 					new XElement("x1", "Hi!"),
 					new XElement("x2", new XElement("NewContent", "Bye!"))

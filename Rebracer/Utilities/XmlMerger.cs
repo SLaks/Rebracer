@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace SLaks.Rebracer.Utilities {
@@ -49,7 +50,7 @@ namespace SLaks.Rebracer.Utilities {
 
 				// If this element has a replacement in the new set, use it.
 				if (newIndex < newItems.Count && StringComparer.Ordinal.Compare(newItems[newIndex].Key, thisKey) == 0) {
-					if (!changed && !XNode.DeepEquals(o, newItems[newIndex].Value))
+					if (!changed && !DeepContentEqual(o, newItems[newIndex].Value))
 						changed = true;
 					o.ReplaceWith(newItems[newIndex].Value);
 					IndentChildren(newItems[newIndex].Value);
@@ -88,6 +89,44 @@ namespace SLaks.Rebracer.Utilities {
 			for (; newIndex < newItems.Count; newIndex++)
 				inserter(separatingWhitespace, newItems[newIndex].Value);
 			return changed;
+		}
+
+		///<summary>Checks whether two elements are deeply equal, ignoring pure whitespace and comments.</summary>
+		/// <remarks>Does not ignore insignificant whitespace within a string.</remarks>
+		static bool DeepContentEqual(XElement first, XElement second) {
+			if (first == second) return true;
+			if (first == null || second == null) return false;
+
+			if (first.Name != second.Name) return false;
+			if (!SequenceEqual(first.Attributes(), second.Attributes(), (x, y) => x.Name == y.Name && x.Value == y.Value))
+				return false;
+
+			return SequenceEqual(ContentNodes(first), ContentNodes(second), (x, y) => {
+				if (x.NodeType != y.NodeType)
+					return false;
+				if (x.NodeType == XmlNodeType.Element)
+					return DeepContentEqual((XElement)x, (XElement)y);
+				return XNode.DeepEquals(x, y);
+			});
+		}
+		static IEnumerable<XNode> ContentNodes(this XContainer container) {
+			return container.Nodes().Where(n => n.NodeType != XmlNodeType.Comment 
+											&& (n.NodeType != XmlNodeType.Text || !string.IsNullOrWhiteSpace(((XText)n).Value))
+										  );
+		}
+
+		// Copied from LINQ source; modified to accept a delegate.
+		static bool SequenceEqual<TSource>(this IEnumerable<TSource> first, IEnumerable<TSource> second, Func<TSource, TSource, bool> comparer) {
+			if (first == null) throw new ArgumentNullException("first");
+			if (second == null) throw new ArgumentNullException("second");
+			using (IEnumerator<TSource> e1 = first.GetEnumerator())
+			using (IEnumerator<TSource> e2 = second.GetEnumerator()) {
+				while (e1.MoveNext()) {
+					if (!(e2.MoveNext() && comparer(e1.Current, e2.Current))) return false;
+				}
+				if (e2.MoveNext()) return false;
+			}
+			return true;
 		}
 
 		///<summary>Gets all whitespace and comment nodes before the specified element, until its preceding element.</summary>
