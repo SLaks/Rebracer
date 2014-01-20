@@ -112,6 +112,8 @@ namespace SLaks.Rebracer.Services {
 			// is no real solution, do nothing.
 			// Also do nothing when a solution that contains a
 			// Solution Item that doesn't exist is opened.
+			if (!dte.Solution.IsOpen || string.IsNullOrEmpty(dte.Solution.FullName))
+				return;
 			var expectedPath = locator.SolutionPath(dte.Solution);
 			if (String.IsNullOrEmpty(expectedPath)
 			 || ProjectItem.Name != Path.GetFileName(expectedPath)
