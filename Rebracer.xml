@@ -7,7 +7,12 @@
   <ToolsOptions>
     <ToolsOptionsCategory name="Environment">
       <ToolsOptionsSubCategory name="TaskList">
-        <PropertyValue name="CommentTokens" ArrayType="VT_VARIANT" ArrayElementCount="4"><PropertyValue name="0">TODO:2</PropertyValue><PropertyValue name="1">HACK:2</PropertyValue><PropertyValue name="2">UNDONE:2</PropertyValue><PropertyValue name="3">UnresolvedMergeConflict:3</PropertyValue></PropertyValue>
+        <PropertyValue name="CommentTokens" ArrayType="VT_VARIANT" ArrayElementCount="4">
+          <PropertyValue name="0">TODO:2</PropertyValue>
+          <PropertyValue name="1">HACK:2</PropertyValue>
+          <PropertyValue name="2">UNDONE:2</PropertyValue>
+          <PropertyValue name="3">UnresolvedMergeConflict:3</PropertyValue>
+        </PropertyValue>
         <PropertyValue name="ConfirmTaskDeletion">true</PropertyValue>
         <PropertyValue name="DontShowFilePaths">true</PropertyValue>
         <PropertyValue name="WarnOnAddingHiddenItem">false</PropertyValue>
@@ -41,7 +46,7 @@
         <PropertyValue name="EncapsulateField_SearchInComments">0</PropertyValue>
         <PropertyValue name="EncapsulateField_SearchInStrings">0</PropertyValue>
         <PropertyValue name="EncapsulateField_UpdateAllReferences">0</PropertyValue>
-        <PropertyValue name="EnterOutliningModeOnOpen">0</PropertyValue>
+        <PropertyValue name="EnterOutliningModeOnOpen">1</PropertyValue>
         <PropertyValue name="ExtractInterface_SelectAll">0</PropertyValue>
         <PropertyValue name="FilterKeywordsContextually">1</PropertyValue>
         <PropertyValue name="FilterToAllowableTypes">1</PropertyValue>
@@ -60,7 +65,7 @@
         <PropertyValue name="Indent_FlushLabelsLeft">0</PropertyValue>
         <PropertyValue name="Indent_UnindentLabels">2</PropertyValue>
         <PropertyValue name="InsertNewlineOnEnterWithWholeWord">0</PropertyValue>
-        <PropertyValue name="NewLines_AnonymousTypeInitializer_EachMember">1</PropertyValue>
+        <PropertyValue name="NewLines_AnonymousTypeInitializer_EachMember">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_AnonymousMethod">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_AnonymousTypeInitializer">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_ArrayInitializer">0</PropertyValue>
@@ -68,13 +73,13 @@
         <PropertyValue name="NewLines_Braces_ControlFlow">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_LambdaExpressionBody">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_Method">0</PropertyValue>
-        <PropertyValue name="NewLines_Braces_ObjectInitializer">1</PropertyValue>
+        <PropertyValue name="NewLines_Braces_ObjectInitializer">0</PropertyValue>
         <PropertyValue name="NewLines_Braces_Type">0</PropertyValue>
         <PropertyValue name="NewLines_Keywords_Catch">0</PropertyValue>
-        <PropertyValue name="NewLines_Keywords_Else">1</PropertyValue>
+        <PropertyValue name="NewLines_Keywords_Else">0</PropertyValue>
         <PropertyValue name="NewLines_Keywords_Finally">0</PropertyValue>
-        <PropertyValue name="NewLines_ObjectInitializer_EachMember">1</PropertyValue>
-        <PropertyValue name="NewLines_QueryExpression_EachClause">1</PropertyValue>
+        <PropertyValue name="NewLines_ObjectInitializer_EachMember">0</PropertyValue>
+        <PropertyValue name="NewLines_QueryExpression_EachClause">0</PropertyValue>
         <PropertyValue name="OnlyScanFirstTypeInFileForDesignerAttribute">0</PropertyValue>
         <PropertyValue name="ProgressDialogDelaySeconds">2</PropertyValue>
         <PropertyValue name="RefactorNotifyRenameEnabled">1</PropertyValue>
@@ -84,7 +89,7 @@
         <PropertyValue name="RenameSmartTagEnabled">1</PropertyValue>
         <PropertyValue name="Rename_Comments">0</PropertyValue>
         <PropertyValue name="Rename_Overloads">0</PropertyValue>
-        <PropertyValue name="Rename_Preview">1</PropertyValue>
+        <PropertyValue name="Rename_Preview">0</PropertyValue>
         <PropertyValue name="Rename_Strings">0</PropertyValue>
         <PropertyValue name="ReorderParameters_PreviewReferenceChanges">1</PropertyValue>
         <PropertyValue name="ShowHiddenItems">0</PropertyValue>
