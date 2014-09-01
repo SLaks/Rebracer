@@ -22,7 +22,12 @@ To use Rebracer for a new solution, right-click the solution, click Add, New Reb
 
  - Q: What about tabs vs. spaces?  
    A: Use the existing [EditorConfig extension](http://visualstudiogallery.msdn.microsoft.com/c8bccfe2-650c-4b42-bc5c-845e21f96328), which allows you to specify newline and whitespace settings for individual files or patterns, and works with most editors.  
-    If you want to maintain a single settings file, you can manually add `<ToolsOptionsSubCategory name="CSharp">` under `<ToolsOptionsCategory name="TextEditor">` in Rebracer.xml.
+    If you want to maintain a single settings file, you can manually add `<ToolsOptionsSubCategory name="CSharp">` under `<ToolsOptionsCategory name="TextEditor">` in Rebracer.xml:
+   ```
+  <ToolsOptionsSubCategory name="CSharp">
+    <PropertyValue name="InsertTabs">true</PropertyValue>
+  </ToolsOptionsSubCategory name="CSharp">
+  ```
 
  - Q: Will this mess up my global settings for projects that don't use Rebracer?  
    A: Nope!  Rebracer maintains a separate XML file in your Visual Studio profile containing your original global settings.  If you open or create a solution that doesn't have a Rebracer settings file, it will revert to your existing global settings.
