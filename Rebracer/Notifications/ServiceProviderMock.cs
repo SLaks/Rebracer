@@ -31,13 +31,16 @@ namespace SLaks.Rebracer.Notifications {
 			};
 
 			ServiceProviderRegistration.CreateFromSetSite(sp);
-			// The designer loads Microsoft.VisualStudio.Shell.12.0,
+			// The designer loads Microsoft.VisualStudio.Shell.XX.0,
 			// which we cannot reference directly (to avoid breaking
-			// older versions). Therefore, I set its global property
-			// using Reflection instead.
-			Type.GetType("Microsoft.VisualStudio.Shell.ServiceProvider, Microsoft.VisualStudio.Shell.12.0")
-				.GetMethod("CreateFromSetSite", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static)
-				.Invoke(null, new[] { sp });
+			// older versions). Therefore, I set the global property
+			// for every available version using Reflection instead.
+			foreach (var vsVersion in FindVsVersions().Where(v => v.Major >= 10)) {
+				var type = Type.GetType("Microsoft.VisualStudio.Shell.ServiceProvider, Microsoft.VisualStudio.Shell." + vsVersion.ToString(2));
+				if (type == null) continue;
+				type.GetMethod("CreateFromSetSite", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static)
+					.Invoke(null, new[] { sp });
+			}
 		}
 
 		public static IEnumerable<Version> FindVsVersions() {
