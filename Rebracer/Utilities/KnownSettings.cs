@@ -64,7 +64,7 @@ namespace SLaks.Rebracer.Utilities {
 				"EncapsulateField_PreviewReferenceChanges", "EncapsulateField_SearchInComments", "EncapsulateField_SearchInStrings", 
 				"EncapsulateField_UpdateAllReferences", "EnterOutliningModeOnOpen", "ExtractInterface_SelectAll", "FilterKeywordsContextually", 
 				"FilterToAllowableTypes", "GenerateConstructorSmartTagEnabled", "GenerateStubSmartTagEnabled", "HighlightReferences", 
-				"ImplementInterfaceSmartTagEnabled", "ImplementInterface_InsertRegionTags", "InsertNewlineOnEnterWithWholeWord", 
+				"ImplementInterfaceSmartTagEnabled", "InsertNewlineOnEnterWithWholeWord", 
 				"OnlyScanFirstTypeInFileForDesignerAttribute", "ProgressDialogDelaySeconds", "RefactorNotifyRenameEnabled", 
 				"Refactoring_Verification_Enabled", "RemoveParameters_PreviewReferenceChanges", "RenameSmartTagEnabled", "Rename_Comments", 
 				"Rename_Overloads", "Rename_Strings", "ReorderParameters_PreviewReferenceChanges", "ShowHiddenItems", "ShowKeywords", 
