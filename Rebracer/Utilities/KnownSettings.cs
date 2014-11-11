@@ -31,7 +31,18 @@ namespace SLaks.Rebracer.Utilities {
 				// Cannot read: Exception occurred. (Exception from HRESULT: 0x80020009 (DISP_E_EXCEPTION))
 				"IntellisenseOptions",
 				// Non-source settings that can vary independently
-				"InactiveCodeOpacityPercent", "CompleteSlashStar", "CompleteParensInRawString", "DisableReferencesResolving"
+				"InactiveCodeOpacityPercent", "CompleteSlashStar", "CompleteParensInRawString", "DisableReferencesResolving",
+				"AutoTuneMaximumCachedTranslationUnits", "AutomaticOutliningOfPragmaRegions", "AutomaticOutliningOfStatementBlocks", 
+				"DisableAggressiveMemberList", "DisableDatabase", "DisableDatabaseAutoUpdates", 
+				"DisableDatabaseImplicitAutoCleanup", "DisableDatabaseImplicitFiles", "DisableDatabaseUpdates",
+				"DisableExternalDependenciesFolders", "DisableInactiveCodeOpacity", "DisableIncludeAutoComplete", "DisableIntelliSense",
+				"DisableIntelliSenseUpdating", "DisableMemberListExpansions", "DisableMemberListKeywords", "DisablePreLoadNavigateToCache", 
+				"DisableReferenceHighlighting", "DisableSemanticColoring", "DisableSharedIntelliSense", "DisableSquiggles", 
+				"DoNotWarnIfFallbackLocationUsed", "EnableLogging", "EnableQuickInfoToolTips", "EnterOutliningModeWhenFilesOpen", 
+				"FallbackLocation", "HideUnconfirmedReferencesResults", "LoggingFilter", 
+				"LoggingLevel", "MaximumCachedTranslationUnits", "MemberListCommitAggressive", "MemberListCommitCharacters", 
+				"MemberListFilterInaccessible", "MemberListFilterMode", "RecreateDatabase", "RescanSolution", "RescanSolutionInterval", 
+				"SmartMemberListCommitOnEnter", "UseForwardSlashForIncludeAutoComplete"
 
 			} },
 			{ new SettingsSection("TextEditor", "JavaScript Specific"), new [] {
@@ -45,7 +56,21 @@ namespace SLaks.Rebracer.Utilities {
 				// Typo'd setting in some VS builds; ignoring to not give warnings for most people.
 				"NewLineQueryExpression_EachClause", 
 				// Non-source settings that can vary independently
-				"Rename_Preview", "EnterOutliningModeOnOpen" 
+				"Rename_Preview", "EnterOutliningModeOnOpen", "BraceMatchingRectangle", "BringUpOnEventHookup", "BringUpOnIdentifier", 
+				"BringUpOnOverride", "BringUpOnPartial", "BringUpOnSpace", 
+				"CollapseInactiveBlocksOnOpen", "CollapseRegionBlocksOnOpen", "Colorize", "ColorizeBoundTypes", "CompleteOnNewline", 
+				"CompleteOnSpace", "CompletionCommitCharacters", "DelayBeforeShowingErrors", "EditAndContinueEnabled", 
+				"EditAndContinueReportEnterBreakStateFailure", "EditAndContinueReportOpenScopeFailure", "EnableProgressDialogOnWaitForBackground", 
+				"EncapsulateField_PreviewReferenceChanges", "EncapsulateField_SearchInComments", "EncapsulateField_SearchInStrings", 
+				"EncapsulateField_UpdateAllReferences", "EnterOutliningModeOnOpen", "ExtractInterface_SelectAll", "FilterKeywordsContextually", 
+				"FilterToAllowableTypes", "GenerateConstructorSmartTagEnabled", "GenerateStubSmartTagEnabled", "HighlightReferences", 
+				"ImplementInterfaceSmartTagEnabled", "ImplementInterface_InsertRegionTags", "InsertNewlineOnEnterWithWholeWord", 
+				"OnlyScanFirstTypeInFileForDesignerAttribute", "ProgressDialogDelaySeconds", "RefactorNotifyRenameEnabled", 
+				"Refactoring_Verification_Enabled", "RemoveParameters_PreviewReferenceChanges", "RenameSmartTagEnabled", "Rename_Comments", 
+				"Rename_Overloads", "Rename_Strings", "ReorderParameters_PreviewReferenceChanges", "ShowHiddenItems", "ShowKeywords", 
+				"ShowSnippets", "SmartTagEnabled", "Squiggles", "Squiggles_SemanticAnalysis", "TrackMostRecentlyUsed", 
+				"UnboundItemSmartTagEnabled", "UnboundItem_ExactMatches",
+				"Watson_DeferSendingUntilLater", "Watson_MaxExceptionsToReport", "Watson_ReportExceptions"
 			} }
 		};
 		///<summary>Checks whether a specific property should be skipped to to persistence issues.</summary>
