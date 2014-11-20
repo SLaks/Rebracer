@@ -155,7 +155,7 @@ namespace SLaks.Rebracer.Services {
 			try {
 				dte.Properties(section);
 				return true;
-			} catch (COMException) { return false; }
+			} catch (COMException) { return false; } catch (NotImplementedException) { return false; }
 		}
 
 		///<summary>Loads an existing settings file.</summary>
