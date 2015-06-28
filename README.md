@@ -48,3 +48,6 @@ To use Rebracer for a new solution, right-click the solution, click Add, New Reb
  - Q: Can this work with MonoDevelop?  
    A: Great question! I have no idea.  
      Adding such compatibility would require a separate version of this extension for MonoDevelop, which would need to map property names from Visual Studio.
+
+#License
+[MIT](http://opensource.org/licenses/MIT)
