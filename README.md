@@ -26,7 +26,7 @@ To use Rebracer for a new solution, right-click the solution, click Add, New Reb
    ```
   <ToolsOptionsSubCategory name="CSharp">
     <PropertyValue name="InsertTabs">true</PropertyValue>
-  </ToolsOptionsSubCategory name="CSharp">
+  </ToolsOptionsSubCategory>
   ```
 
  - Q: Will this mess up my global settings for projects that don't use Rebracer?  
