@@ -76,6 +76,10 @@ namespace SLaks.Rebracer.Services {
 			} catch (COMException ex) {
 				logger.Log((string)("An error occurred while saving " + section + "#" + name + ": " + ex.Message));
 				return null;
+			} catch (InvalidOperationException) {
+				// The InvalidOperationException is thrown when property is internal, read only or write only, so
+				// property value cannot be set or get.
+				return null;
 			}
 			var collection = value as ICollection;
 			if (collection == null)
@@ -93,6 +97,7 @@ namespace SLaks.Rebracer.Services {
 		///<summary>Reads settings from the XML file into Visual Studio's global settings.</summary>
 		private void LoadSettings() {
 			var xml = XDocument.Load(SettingsPath, LoadOptions.PreserveWhitespace);
+			bool modified = false;
 
 			foreach (var section in SettingsSection.FromXmlSettingsFile(xml.Root)) {
 				if (!KnownSettings.IsAllowed(section.Item1)) {
@@ -108,16 +113,52 @@ namespace SLaks.Rebracer.Services {
 					continue;
 				}
 
-				foreach (var property in section.Item2.Elements("PropertyValue")) {
+				List<XElement> elements = section.Item2.Elements("PropertyValue").ToList();
+
+				foreach (var property in elements) {
 					string name = property.Attribute("name").Value;
 					if (KnownSettings.ShouldSkip(section.Item1, name))
 						continue;
 					try {
-						container.Item(name).Value = VsValue(property);
+						Property p;
+
+						try {
+							p = container.Item(name);
+						} catch (ArgumentException ex) {
+							if ((uint)ex.HResult == 0x80070057) // E_INVALIDARG, Property does not exists.
+							{
+								// This error occurs when the IDE property does not exist at this time. Non-existent properties 
+								// are removed from the settings file.
+
+								property.Remove();
+								modified = true;
+								continue;
+							}
+							logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + name + " from settings file.  Error: " + ex.Message);
+							continue;
+						}
+
+						p.Value = VsValue(property);
+
+					} catch (COMException ex) {
+
+						if ((uint)ex.HResult == 0x80020003) // DISP_E_MEMBERNOTFOUND
+						{
+							// MSDN: A return value indicating that the requested member does not exist, or the call to Invoke 
+							// tried to set the value of a read-only property. So this is not error.
+
+							continue;
+						}
+
+						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + name + " from settings file.  Error: " + ex.Message);
 					} catch (Exception ex) {
 						logger.Log("An error occurred while reading the setting " + section.Item1 + "#" + name + " from settings file.  Error: " + ex.Message);
 					}
 				}
+			}
+
+			if (modified) {
+				xml.Save(SettingsPath, SaveOptions.DisableFormatting);
 			}
 		}
 		static object VsValue(XElement elem) {
