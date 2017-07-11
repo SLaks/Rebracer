@@ -26,6 +26,37 @@ namespace SLaks.Rebracer.Services {
 
 		///<summary>Gets the path to a solution-specific settings file.</summary>
 		public string SolutionPath(Solution solution) {
+
+			if (String.IsNullOrWhiteSpace(solution.FileName))
+				return null;
+
+			string root = Path.GetPathRoot(solution.FileName);
+			string path = Path.GetDirectoryName(solution.FileName).Substring(root.Length);
+			string file = Path.Combine(root, path, FileName);
+
+			if (File.Exists(file))
+				return file;
+
+			int index = path.LastIndexOf(Path.DirectorySeparatorChar);
+
+			while (index != -1) {
+
+				path = path.Substring(0, index);
+				file = Path.Combine(root, path, FileName);
+
+				if (File.Exists(file))
+					return file;
+
+				index = path.LastIndexOf(Path.DirectorySeparatorChar);
+			}
+
+			if( index == -1 ) {
+				file = Path.Combine(root, FileName);
+
+				if (File.Exists(file))
+					return file;
+			}
+
 			return Path.Combine(Path.GetDirectoryName(solution.FileName), FileName);
 		}
 
